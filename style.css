@@ -13,13 +13,13 @@ body {
 .left {
     width: 66%;
     background-color: #f3ddff;
-    padding: 80px;           /* optional, can reduce */
+    padding: 80px;           
     
-    display: flex;           /* make it flex */
-    flex-direction: column;  /* stack items vertically */
-    justify-content: center; /* vertical centering */
-    align-items: flex-start;     /* horizontal centering */
-    text-align: left;      /* center text inside */
+    display: flex;           
+    flex-direction: column;  
+    justify-content: center; 
+    align-items: flex-start; 
+    text-align: left;      
 }
 
 
