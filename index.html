@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+        }
+
+        /* Left panel */
+        .left {
+            width: 50%;
+            background-color: #f3ddff;
+            padding: 80px;
+        }
+
+        .left h1 {
+            margin-top: 0;
+            font-size: 40px;
+        }
+
+        .left p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* Right panel */
+        .right {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-card {
+            width: 320px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .logo span {
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 6px;
+            background-color: #e0e0e0;
+            font-size: 14px;
+        }
+
+        .forgot {
+            display: block;
+            text-align: right;
+            font-size: 12px;
+            color: #8a2be2;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 120px;
+            padding: 10px;
+            background-color: #b57be5;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .signup {
+            margin-top: 20px;
+            font-size: 13px;
+        }
+
+        .signup a {
+            color: #8a2be2;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Left section -->
+    <div class="left">
+        <h1>Welcome!</h1>
+        <p>
+            blah blah blah blah blah blah<br>
+            blah blah blah blah
+        </p>
+    </div>
+
+    <!-- Right section -->
+    <div class="right">
+        <div class="login-card">
+            <div class="logo">
+                🦦 <span>Talent</span>
+            </div>
+
+            <input type="text" placeholder="Username">
+            <input type="password" placeholder="Password">
+
+            <a href="#" class="forgot">Forgot Password?</a>
+
+            <button>Login</button>
+
+            <div class="signup">
+                Don’t have an account? <a href="#">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+
