@@ -5,9 +5,12 @@ from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+from cors_config import add_cors_middleware
 
 DB_PATH = "lyrathon_recruiter.db"
 app = FastAPI(title="Recruiter Backend (Lyrathon)", version="1.0")
+
+add_cors_middleware(app)
 
 
 # -----------------------------
