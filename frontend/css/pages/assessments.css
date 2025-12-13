@@ -30,6 +30,12 @@
     opacity: 0.7;
 }
 
+
+.assessment-path {
+    width: 100%;
+    max-width: none;
+}
+
 /* Levels */
 .level {
     display: inline-block;
