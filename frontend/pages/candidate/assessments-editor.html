@@ -6,9 +6,16 @@
 
     <link rel="stylesheet" href="../../css/components/navbar.css">
     <link rel="stylesheet" href="../../css/base/style.css">
+    <link rel="stylesheet" href="../../css/pages/candidate/home.css">
     <link rel="stylesheet" href="../../css/pages/candidate/assessments.css">
+    <link rel="stylesheet" href="../../css/pages/candidate/assessment-editor.css">
 
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material.min.css">
 </head>
 <body>
 
@@ -28,97 +35,139 @@
 </nav>
 
 <div class="container">
-
-    <!-- LEFT COLUMN (REUSED) -->
+    <!-- LEFT COLUMN -->
     <div id="profile-column"></div>
 
     <!-- RIGHT COLUMN -->
     <div class="content-column">
-
         <div class="card">
             <div class="card-header">
-                <h3>Assessments</h3>
+                <h3>Object Oriented Python Course</h3>
             </div>
-            
 
+            <h4>Level 1 Assignment</h4>
 
-            <div class="assessment-list">
+            <p>
+                In this section, you will be asked to write a simple program to evaluate your level 1 ability.
+            </p>
 
-                <!-- Completed -->
-                <div class="assessment completed"
-                    data-level="1"
-                    data-domain="backend"
-                    data-status="completed">
+            <ul>
+                <li>Create a class called <strong>Student</strong>.</li>
+                <li>The class must have the following attributes:
+                    <ul>
+                        <li><code>name</code> (string)</li>
+                        <li><code>student_id</code> (integer)</li>
+                    </ul>
+                </li>
+                <li>The class must include a method called <code>display_info()</code>.</li>
+                <li>The <code>display_info()</code> method should print the student’s name and ID.</li>
+                <li>Create two <strong>Student</strong> objects.</li>
+                <li>Call the <code>display_info()</code> method for each object.</li>
+            </ul>
 
-                    <span class="level level-1">Level 1</span>
-                    <h4>REST API Fundamentals</h4>
-                    <p>Build a simple REST API with CRUD operations</p>
-                    <span class="status completed">✔ Completed</span>
-                    <p class="score">🏆 Score: 92%</p>
+            <!-- CODE EDITOR -->
+            <div class="editor-container">
+                <h4>Your Code</h4>
+                <textarea id="code-editor"></textarea>
+
+                <div class="editor-actions">
+                    <button id="run-btn" disabled>Run Code</button>
+                    <button id="submit-btn" disabled>Submit</button>
                 </div>
 
-                <div class="assessment completed">
-                    <span class="level level-2">Level 2</span>
-                    <h4>Database Design & Optimisation</h4>
-                    <p>Design and optimise a relational database schema</p>
-                    <span class="status completed">✔ Completed</span>
-                    <p class="score">🏆 Score: 88%</p>
-                </div>
-
-                <!-- Available -->
-                <div class="assessment available"
-                    data-level="3"
-                    data-domain="backend"
-                    data-status="available">
-
-                    <span class="level level-3">Level 3</span>
-                    <h4>Microservices Architecture</h4>
-                    <p>Design a scalable microservices system</p>
-                    <button class="start">Start</button>
-                </div>
-
-                <!-- Locked -->
-                <div class="assessment locked"
-                    data-level="4"
-                    data-domain="backend"
-                    data-status="locked">
-
-                    <span class="level level-4">Level 4</span>
-                    <h4>Advanced System Design</h4>
-                    <p>Design a high-throughput distributed system</p>
-                    <span class="status locked">🔒 Locked</span>
-                </div>
-
-                <!-- Python -->
-                <div class="assessment completed"
-                    data-level="1"
-                    data-domain="backend"
-                    data-status="completed">
-
-                    <span class="level level-1">Level 1</span>
-                    <h4>Python Basics & Data Structures</h4>
-                    <p>Solve problems using Python fundamentals</p>
-                    <span class="status completed">✔ Completed</span>
-                    <p class="score">🏆 Score: 95%</p>
-                </div>
-
-                <div class="assessment available"
-                    data-level="2"
-                    data-domain="backend"
-                    data-status="available">
-
-                    <span class="level level-2">Level 2</span>
-                    <h4>Object-Oriented Python</h4>
-                    <p>Build a class-based application</p>
-                    <button class="start">Start</button>
-                </div>
-
+                <pre id="output">Loading Python environment...</pre>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Pyodide -->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+
+<!-- CodeMirror JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+
+<script>
+    // Initialize CodeMirror
+    const editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+        lineNumbers: true,
+        mode: "python",
+        theme: "material"
+    });
+
+    const runBtn = document.getElementById("run-btn");
+    const submitBtn = document.getElementById("submit-btn");
+    const output = document.getElementById("output");
+
+    let pyodideReady = false;
+    let pyodide;
+
+    // Load Pyodide on page load
+    async function loadPyodideAndSetup() {
+        output.textContent = "Loading Python environment...";
+        pyodide = await loadPyodide();
+
+        // Redirect print to JS
+        await pyodide.runPythonAsync(`
+import sys
+from js import console
+
+class OutputCatcher:
+    def __init__(self):
+        self.text = ""
+    def write(self, s):
+        self.text += s
+    def flush(self):
+        pass
+
+sys.stdout = OutputCatcher()
+sys.stderr = OutputCatcher()
+`);
+
+        pyodideReady = true;
+        runBtn.disabled = false;
+        submitBtn.disabled = false;
+        output.textContent = "Python environment ready!\n";
+    }
+
+    loadPyodideAndSetup();
+
+    // Run code
+    runBtn.addEventListener("click", async () => {
+        if (!pyodideReady) {
+            output.textContent = "Python environment still loading...";
+            return;
+        }
+
+        const code = editor.getValue();
+        output.textContent = ""; // clear previous output
+
+        try {
+            const result = await pyodide.runPythonAsync(code);
+            // Get captured print output
+            const printed = await pyodide.runPythonAsync("sys.stdout.text");
+            output.textContent = printed;
+
+            if (result !== undefined) output.textContent += "\n" + result;
+
+            // Reset stdout for next run
+            await pyodide.runPythonAsync("sys.stdout.text = ''");
+        } catch (err) {
+            output.textContent += err;
+        }
+    });
+
+    // Submit code
+    submitBtn.addEventListener("click", () => {
+        const code = editor.getValue();
+        console.log("Submitted code:", code);
+        alert("Your code has been submitted!");
+    });
+</script>
+
 <script src="../../js/components/profile-column.js"></script>
 <script src="../../js/pages/candidate/assessments.js"></script>
+
 </body>
 </html>

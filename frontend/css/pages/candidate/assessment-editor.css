@@ -1,0 +1,28 @@
+.CodeMirror {
+height: 300px;
+border: 1px solid #ddd;
+font-size: 14px;
+margin-top: 16px;
+}
+
+.editor-container {
+margin-top: 20px;
+}
+
+.editor-actions {
+margin-top: 15px;
+display: flex;
+gap: 10px;
+}
+
+
+#output {
+margin-top: 15px;
+padding: 10px;
+background: #111;
+color: rgb(225, 178, 251);
+min-height: 80px;
+font-family: monospace;
+font-size: 13px;
+white-space: pre-wrap;
+}
