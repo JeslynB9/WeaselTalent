@@ -73,3 +73,34 @@ body {
     font-size: 80px;
     text-align: center;
 }
+.card .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.card .grid .item {
+    background-color: #e0d4f7;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.card .grid .item h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+}
+
+.card .grid .item .company {
+    font-weight: bold;
+    color: #4a3f69;
+    margin: 0 0 5px 0;
+}
+
+.card .grid .item .desc {
+    font-size: 0.9em;
+    color: #333;
+    margin: 0;
+}
+
