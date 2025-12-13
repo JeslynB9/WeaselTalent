@@ -31,3 +31,48 @@
 
 ### NOTIFICATIONS
     # Notifications: notification_id, user_id, type, message, is_read, created_at 
+
+from sqlalchemy import (
+    Column, 
+    Integer,
+    String, 
+    Boolean, 
+    DateTime,
+)
+
+from datetime import datetime, timezone
+from db import Base
+
+## Users table
+class User(Base):
+    __tablename__ = "users"
+
+    user_id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, nullable=False)
+    password_hash = Column(String, nullable=False)
+    role = Column(String, nullable=False)
+
+    created_at = Column (
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    last_login = Column(DateTime(timezone=True), nullable=True)
+    is_active = Column(Boolean, default=True, nullable=False)
+
+## Assessment table
+class Assessment(Base):
+    __tablename__ = "assessments"
+
+    assessment_id = Column(Integer, primary_key=True, index=True)
+    # scaffold that will be used to create the assessment
+    scaffold_id = Column(Integer, nullable=False)
+    generated_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    time_limit_minutes = Column(Integer, nullable=True)
+    is_active = Column(Boolean, default=True, nullable=False)
