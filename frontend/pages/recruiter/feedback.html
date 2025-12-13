@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interview Feedback</title>
+
+    <link rel="stylesheet" href="../../css/components/navbar.css">
+    <link rel="stylesheet" href="../../css/base/style.css">
+    <link rel="stylesheet" href="../../css/pages/recruiter-feedback.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav>
+    <div class="left-nav">
+        <img src="../../assets/images/logo.png" alt="Logo">
+        <input type="text" placeholder="Search candidates">
+    </div>
+    <div class="links">
+        <a href="#">Jobs</a>
+        <a href="#">Interviews</a>
+        <a href="#">Me</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- LEFT COLUMN -->
+    <div class="profile-column">
+        <div class="card">
+            <h4>Candidate Profile</h4>
+            <p>Candidate #1024</p>
+            <p>Backend Engineer</p>
+            <p>Python · System Design</p>
+        </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="content-column">
+
+        <div class="card">
+            <h4>Positives</h4>
+            <textarea placeholder="Strengths, what went well, strong skills demonstrated..."></textarea>
+        </div>
+
+        <div class="card">
+            <h4>Negatives</h4>
+            <textarea placeholder="Weaknesses, gaps, areas to improve..."></textarea>
+        </div>
+
+        <div class="card">
+            <h4>Interview Rating</h4>
+
+            <div class="rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="primary">Save</button>
+        </div>
+
+    </div>
+</div>
+
+<script src="../../js/pages/recruiter-feedback.js"></script>
+</body>
+</html>
