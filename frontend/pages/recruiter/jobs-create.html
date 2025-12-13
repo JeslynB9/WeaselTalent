@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Job Role</title>
+
+    <link rel="stylesheet" href="../../css/components/navbar.css">
+    <link rel="stylesheet" href="../../css/base/style.css">
+    <link rel="stylesheet" href="../../css/pages/recruiter/recruiter-jobs.css">
+</head>
+<body>
+
+<nav>
+    <div class="left-nav">
+        <img src="../../assets/images/logo.png" alt="Logo">
+        <input type="text" placeholder="Search jobs">
+    </div>
+    <div class="links">
+        <a href="../../pages/recruiter/home.html">Home</a>
+        <a href="../../pages/recruiter/jobs.html">Jobs</a>
+        <a href="../../pages/recruiter/courses.html">Courses</a>
+        <a href="../../pages/recruiter/interviews.html">Interviews</a>
+        <a href="../../pages/shared/profile.html">Me</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- LEFT COLUMN -->
+    <div id="recruiter-column" class="recruiter-column"></div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="content-column">
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Create Job Role</h3>
+            </div>
+
+            <form id="job-create-form">
+                <label>Role ID (optional): <input type="number" id="role-id" name="role_id" /></label>
+                <label>Company ID: <input type="number" id="company-id" name="company_id" required placeholder="1" /></label>
+                <label>Company Name (optional): <input type="text" id="company-name" name="company_name" /></label>
+                <label>Title: <input type="text" id="title" name="title" required /></label>
+                <label>Description: <textarea id="description" name="description"></textarea></label>
+
+                <div id="requirements">
+                    <h4>Requirements</h4>
+                    <div class="requirement-row">
+                        <input type="text" class="req-text" placeholder="Requirement text" required />
+                        <input type="number" class="req-level" placeholder="Level (1-5)" min="1" max="5" />
+                        <button type="button" class="remove-req">Remove</button>
+                    </div>
+                </div>
+
+                <button type="button" id="add-requirement">Add requirement</button>
+                <div style="margin-top:12px">
+                    <button type="submit" id="submit-role">Create Role</button>
+                </div>
+
+                <div id="form-message" aria-live="polite"></div>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="../../js/api-config.js"></script>
+<script src="../../js/components/recruiter-column.js"></script>
+<script src="../../js/pages/recruiter/recruiter-jobs-create.js"></script>
+</body>
+</html>
