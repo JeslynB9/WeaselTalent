@@ -102,3 +102,45 @@ body {
     color: #333;
     margin: 0;
 }
+
+.desc-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.desc-button .desc {
+    flex: 1;
+    margin: 0;
+}
+
+.level-1 { background: #dcfce7; }
+.level-2 { background: #e0e7ff; }
+.level-3 { background: #ede9fe; }
+.level-4 { background: #fee2e2; }
+
+.level {
+    display: inline-block; /* keep label size natural */
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.filters-home {
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.filters-home select,
+.filters-home button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+#reset-filters {
+    background: #eee;
+}
