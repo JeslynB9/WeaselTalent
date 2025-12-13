@@ -1,1 +1,33 @@
 # handle assesments
+export const generateMatchAnalysis = async (candidate: User, job: Job) => {
+  await new Promise(resolve => setTimeout(resolve, 800));
+
+  const requirements = job.requirements ?? [];
+  const totalRequirements = requirements.length;
+
+  if (totalRequirements === 0) {
+    return { score: 50, reasoning: "No requirements listed for this role yet, so we returned a neutral match score." };
+  }
+
+  const candidateSkills = candidate.skills?.map(s => s.name.toLowerCase()) || [];
+
+  let matches = 0;
+  requirements.forEach(req => {
+    const reqLower = req.toLowerCase();
+    if (candidateSkills.some(skill => reqLower.includes(skill) || skill.includes(reqLower))) {
+      matches++;
+    }
+  });
+
+  let score = Math.round((matches / totalRequirements) * 100);
+  if (score > 95) score = 95;
+
+  const reasoning =
+    score > 80
+      ? `Strong match! ${matches}/${totalRequirements} requirements overlap with the candidate’s skills.`
+      : score > 50
+      ? `Moderate match. Some overlap (${matches}/${totalRequirements}); consider improving ${requirements[0] ?? "key areas"}.`
+      : `Low match. Minimal overlap (${matches}/${totalRequirements}) with the listed requirements.`;
+
+  return { score, reasoning };
+};
