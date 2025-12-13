@@ -1,0 +1,63 @@
+/* =========================================================
+   INTERVIEW LIST
+   ========================================================= */
+.interview-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* =========================================================
+   INTERVIEW CARD (MATCHES JOB CARD STYLE)
+   ========================================================= */
+.interview-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+}
+
+.interview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.interview-header h4 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.company {
+    font-weight: 500;
+    margin: 4px 0;
+}
+
+.meta {
+    font-size: 13px;
+    color: #666;
+}
+
+.result {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.result.passed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.result.failed {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.actions {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+}
