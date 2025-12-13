@@ -48,20 +48,22 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.card h3 {
-    margin-top: 0;
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.card-header h3 {
+    margin: 0;
     font-size: 20px;
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
 }
 
-.see-more {
-    text-align: right;
+.card-header .see-more {
     font-size: 14px;
-    margin-bottom: 10px;
-}
-
-.see-more a {
     color: #8a2be2;
     text-decoration: none;
 }
