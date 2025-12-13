@@ -1,0 +1,166 @@
+@import "variables.css";
+@import "typography.css";
+
+* {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    background-color: #f3ddff;
+    display: flex;
+}
+
+.left {
+    width: 66%;
+    background-color: #f3ddff;
+    padding: 80px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.left h1 {
+    font-family: 'Lilita One', cursive;
+    margin-top: 0;
+    font-size: 50px;
+}
+
+.left h2 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    margin-top: 0;
+    font-size: 25px;
+}
+
+.left p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    line-height: 1.6;
+}
+
+.right {
+    width: 34%;
+    background: white;  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left, .right {
+    height: 100vh;
+}
+
+.left {
+    overflow: auto;
+}
+
+.login-card {
+    width: 320px;
+    text-align: center;
+}
+
+.logo img {
+    display: block;
+    margin: 0 auto -30px auto;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border: none;
+    background-color: #e0e0e0;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.forgot {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    color: #8a2be2;
+    text-decoration: none;
+    margin-bottom: 20px;
+}
+
+button {
+    width: 120px;
+    padding: 10px;
+    background-color: #b57be5;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.signup {
+    margin-top: 20px;
+    font-size: 13px;
+}
+
+.signup a {
+    color: #8a2be2;
+    text-decoration: none;
+}
+
+.filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.filters select,
+.filters button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+#reset-filters {
+    background: #eee;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 0.8fr 2.2fr;
+    gap: 40px;
+    padding: 40px;
+    max-width: 1500px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.container.full-width {
+    display: block;
+    max-width: none;
+    padding: 40px 80px;
+}
+
+.profile-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.content-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    min-height: 250px;
+}

@@ -31,3 +31,32 @@
 
 ### NOTIFICATIONS
     # Notifications: notification_id, user_id, type, message, is_read, created_at 
+
+from pydantic import BaseModel, Field
+from typing import Any, Dict, List, Optional
+
+
+# Defines what /assessments returns
+class AssessmentOut(BaseModel): 
+    id: str
+    track: str
+    level: int
+    title: str
+    prompt: str
+    rubric: Dict[str, Any]
+
+# Defines what frontend must send when submitting: score, feedback, timestamp)
+class SubmissionIn(BaseModel): 
+    candidate_id: str = Field(..., min_length=1, description="Anonymous candidate identifier, e.g., cand-0001")
+    assessment_id: str = Field(..., min_length=1)
+    answer_text: str = Field(..., min_length=10, description="Candidate response (text or pasted code).")
+
+# Defines what backend returns after submission:
+class SubmissionOut(BaseModel): 
+    id: int
+    candidate_id: str
+    assessment_id: str
+    answer_text: str
+    score: Optional[int] = None
+    feedback: Optional[str] = None
+    created_at: str

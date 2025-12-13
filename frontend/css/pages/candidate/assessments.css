@@ -1,0 +1,68 @@
+.assessment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.assessment {
+    position: relative;
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid #ddd;
+    background: white;
+}
+
+.assessment.completed {
+    background: #f0fff4;
+    border-color: #a7f3d0;
+}
+
+.assessment.available {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+}
+
+.assessment.locked {
+    background: #f9fafb;
+    opacity: 0.7;
+}
+
+.assessment-path {
+    width: 100%;
+    max-width: none;
+}
+
+.level {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.level-1 { background: #dcfce7; }
+.level-2 { background: #e0e7ff; }
+.level-3 { background: #ede9fe; }
+.level-4 { background: #fee2e2; }
+
+.status {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    font-size: 13px;
+}
+
+.score {
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+.start {
+    margin-top: 12px;
+    background: #4f46ff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}

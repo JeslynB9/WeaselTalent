@@ -1,0 +1,71 @@
+.assessment-path {
+    padding: 40px;
+}
+
+.assessment-path h2 {
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+.level-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 150px;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.level-title {
+    font-weight: 600;
+}
+
+.path {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lesson {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: white;
+    cursor: pointer;
+}
+
+.lesson.completed {
+    background: #e0e7ff;
+}
+
+.test {
+    font-size: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.test.unlocked {
+    color: black;
+}
+
+.test.locked {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.status {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.status.completed {
+    color: #166534;
+}
+
+.status.in-progress {
+    color: #4f46ff;
+}
+
+.status.locked {
+    color: #999;
+}
