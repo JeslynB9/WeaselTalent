@@ -162,12 +162,38 @@ sys.stderr = OutputCatcher()
     submitBtn.addEventListener("click", () => {
         const code = editor.getValue();
         console.log("Submitted code:", code);
-        alert("Your code has been submitted!");
+
+        // Show the modal
+        const modal = document.getElementById("submitModal");
+        modal.style.display = "block";
+
+        // Redirect when Go Back is clicked
+        const goBackBtn = document.getElementById("goBackBtn");
+        goBackBtn.onclick = () => {
+            window.location.href = "../../pages/candidate/assessments.html"; // change to your target page
+        };
     });
+
+    // Optional: click outside modal to close
+    window.onclick = function(event) {
+        const modal = document.getElementById("submitModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+
+
 </script>
 
 <script src="../../js/components/profile-column.js"></script>
 <script src="../../js/pages/candidate/assessments.js"></script>
+
+<div id="submitModal" class="modal">
+    <div class="modal-content">
+        <h2>Submitted!</h2>
+        <button id="goBackBtn">Go Back</button>
+    </div>
+</div>
 
 </body>
 </html>
