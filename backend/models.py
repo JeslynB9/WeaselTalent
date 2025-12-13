@@ -32,6 +32,7 @@
 ### NOTIFICATIONS
     # Notifications: notification_id, user_id, type, message, is_read, created_at 
 
+from proto import ENUM
 from sqlalchemy import (
     Column, 
     Integer,
@@ -43,7 +44,7 @@ from sqlalchemy import (
 from datetime import datetime, timezone
 from db import Base
 
-## Users table
+### Users table
 class User(Base):
     __tablename__ = "users"
 
@@ -61,7 +62,37 @@ class User(Base):
     last_login = Column(DateTime(timezone=True), nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
 
-## Assessment table
+## Users profile (personal info)
+class UserProfile(Base): 
+    __tablename__ = "user_profiles"
+    user_id = Column(Integer, primary_key=True, index=True)  
+    full_name = Column(String, nullable=True)
+    date_of_birth = Column(DateTime, nullable=True)
+    profile_photo_url = Column(String, nullable=True)
+    is_anonymous = Column(Boolean, default=False, nullable=False)
+
+## Users saved preferences
+class UserPreferences(Base):
+    __tablename__ = "user_preferences" 
+    user_id = Column(Integer, primary_key=True, index=True)
+    preferred_technical_domains = Column(Integer, primary_key=True)
+
+## Technical domains (e.g. web dev, backend, data science, etc) 
+class TechnicalDomains(Base): 
+    __tablename__ = "technical_domains" 
+    domain_id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+
+## domains candidate is skilled in (they did assessment to skill up)
+class CandidateDomains(Base): 
+    __tablename__ = "candidate_domains"
+    candidate_id = Column(Integer, primary_key=True, index=True)
+    domain_id = Column(Integer, primary_key=True, index=True)
+    skill_level = Column(Integer, nullable=False)  
+
+
+### Assessment table
 class Assessment(Base):
     __tablename__ = "assessments"
 
@@ -76,3 +107,113 @@ class Assessment(Base):
 
     time_limit_minutes = Column(Integer, nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
+
+class AssessmentScaffold(Base):
+    __tablename__ = "assessment_scaffolds"
+    scaffold_id = Column(Integer, primary_key=True, index=True)
+    domain_id = Column(Integer, nullable=False)
+    difficulty_level = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+
+
+class Task(Base):
+    __tablename__ = "tasks"
+    task_id = Column(Integer, primary_key=True, index=True)
+    assessment_id = Column(Integer, nullable=False)
+    task_type = Column(String, nullable=False)  
+    prompt = Column(String, nullable=False)
+    max_score = Column(Integer, nullable=False)
+
+class CandidateAssessment(Base):
+    __tablename__ = "candidate_assessments"
+    candidate_assessment_id = Column(Integer, primary_key=True, index=True)
+    candidate_id = Column(Integer, nullable=False)
+    assessment_id = Column(Integer, nullable=False)
+    total_score = Column(Integer, nullable=True)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+
+class CandidateTaskResult(Base):
+    __tablename__ = "candidate_task_results"
+    candidate_assessment_id = Column(Integer, primary_key=True, index=True)
+    task_id = Column(Integer, primary_key=True, index=True)
+    score = Column(Integer, nullable=True)
+    answer = Column(String, nullable=True)
+
+class Company(Base):
+    __tablename__ = "companies"
+    company_id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+class Recruiter(Base):
+    __tablename__ = "recruiters"
+    recruiter_id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, nullable=False)
+    job_title = Column(String, nullable=False)
+
+class JobRole(Base):
+    __tablename__ = "job_roles"
+    role_id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, nullable=False)
+    title = Column(String, nullable=False)
+    description = Column(String, nullable=True) 
+
+class JobRoleRequirement(Base):
+    __tablename__ = "job_role_requirements"
+    role_id = Column(Integer, primary_key=True, index=True)
+    domain_id = Column(Integer, primary_key=True, index=True)
+    minimum_level = Column(Integer, nullable=False)
+
+class CandidateJobMatch(Base):
+    __tablename__ = "candidate_job_matches"
+    candidate_id = Column(Integer, primary_key=True, index=True)
+    role_id = Column(Integer, primary_key=True, index=True)
+    match_score = Column(Integer, nullable=False)
+    last_updated = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+class RecruiterAvailability(Base):
+    __tablename__ = "recruiter_availability"
+    availability_id = Column(Integer, primary_key=True, index=True)
+    recruiter_id = Column(Integer, nullable=False)
+    start_time = Column(DateTime(timezone=True), nullable=False)
+    end_time = Column(DateTime(timezone=True), nullable=False)
+    is_booked = Column(Boolean, default=False, nullable=False)
+
+class Interview(Base):
+    __tablename__ = "interviews"
+    interview_id = Column(Integer, primary_key=True, index=True)
+    candidate_id = Column(Integer, nullable=False)
+    recruiter_id = Column(Integer, nullable=False)
+    role_id = Column(Integer, nullable=False)
+    scheduled_time = Column(DateTime(timezone=True), nullable=False)
+    status = Column(ENUM('scheduled','completed','cancelled'), default='scheduled', nullable=False)
+
+class InterviewNote(Base):
+    __tablename__ = "interview_notes"
+    interview_id = Column(Integer, primary_key=True, index=True)
+    recruiter_id = Column(Integer, nullable=False)
+    notes = Column(String, nullable=True)
+    fit_score = Column(Integer, nullable=True)
+    decision = Column(ENUM('advance','reject','pending'), default='pending', nullable=False)
+
+class Notification(Base):
+    __tablename__ = "notifications"
+    notification_id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, nullable=False)
+    type = Column(String, nullable=False)
+    message = Column(String, nullable=False)
+    is_read = Column(Boolean, default=False, nullable=False)
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
