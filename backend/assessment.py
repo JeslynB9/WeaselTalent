@@ -53,12 +53,12 @@ def init_db() -> None: # creating tables
     conn.commit()
     conn.close()
 
-def seed_assessments() -> None:
+def seed_assessments() -> None: # sample assessments so frontend has data immediately
     """Seed a few assessments if none exist."""
     conn = db()
     cur = conn.cursor()
 
-    count = cur.execute("SELECT COUNT(*) AS c FROM assessments").fetchone()["c"]
+    count = cur.execute("SELECT COUNT(*) AS c FROM assessments").fetchone()["c"]# assessments already exist, don’t add again
     if count > 0:
         conn.close()
         return
@@ -124,7 +124,7 @@ def seed_assessments() -> None:
 # ----------------------------
 # Models
 # ----------------------------
-class AssessmentOut(BaseModel):
+class AssessmentOut(BaseModel): # Defines what /assessments returns
     id: str
     track: str
     level: int
@@ -133,13 +133,13 @@ class AssessmentOut(BaseModel):
     rubric: Dict[str, Any]
 
 
-class SubmissionIn(BaseModel):
+class SubmissionIn(BaseModel): # Defines what frontend must send when submitting: score, feedback, timestamp)
     candidate_id: str = Field(..., min_length=1, description="Anonymous candidate identifier, e.g., cand-0001")
     assessment_id: str = Field(..., min_length=1)
     answer_text: str = Field(..., min_length=10, description="Candidate response (text or pasted code).")
 
 
-class SubmissionOut(BaseModel):
+class SubmissionOut(BaseModel): # Defines what backend returns after submission:
     id: int
     candidate_id: str
     assessment_id: str
@@ -152,7 +152,7 @@ class SubmissionOut(BaseModel):
 # ----------------------------
 # Scoring (simple + explainable)
 # ----------------------------
-def simple_score(assessment_track: str, answer_text: str) -> tuple[int, str]:
+def simple_score(assessment_track: str, answer_text: str) -> tuple[int, str]: # scoring algorithm
     """
     Hackathon-friendly scoring:
     - length + keyword coverage
@@ -162,7 +162,7 @@ def simple_score(assessment_track: str, answer_text: str) -> tuple[int, str]:
     text = answer_text.lower().strip()
     length = len(text)
 
-    # Base from length (cap)
+    # Base from length (cap) - capped at 50 
     base = min(50, int(length / 12))  # ~600 chars => 50
 
     # Track-specific keywords
@@ -176,14 +176,14 @@ def simple_score(assessment_track: str, answer_text: str) -> tuple[int, str]:
     hits = sum(1 for k in pool if k in text)
     kw_score = min(40, hits * 8)  # max 40
 
-    # Bonus for structure
+    # Bonus for structure - dont know if i should include this
     bonus = 0
     if "\n" in answer_text:
         bonus += 5
     if any(bullet in answer_text for bullet in ["- ", "* ", "1)", "2)"]):
         bonus += 5
 
-    score = max(0, min(100, base + kw_score + bonus))
+    score = max(0, min(100, base + kw_score + bonus)) # final score should be between 0 to 100)
 
     feedback_parts = []
     if score < 50:
@@ -202,15 +202,15 @@ def simple_score(assessment_track: str, answer_text: str) -> tuple[int, str]:
 # Startup
 # ----------------------------
 @app.on_event("startup")
-def startup() -> None:
+def startup() -> None: # runs once when server starts
     init_db()
-    seed_assessments()
+    seed_assessments() # ensures database and assessments exists
 
 
 # ----------------------------
 # Routes
 # ----------------------------
-@app.get("/assessments", response_model=List[AssessmentOut])
+@app.get("/assessments", response_model=List[AssessmentOut]) # Frontend calls this to list assessments
 def list_assessments(track: Optional[str] = None) -> List[AssessmentOut]:
     conn = db()
     cur = conn.cursor()
@@ -306,7 +306,7 @@ def submit_assessment(payload: SubmissionIn) -> SubmissionOut:
     )
 
 
-@app.get("/candidates/{candidate_id}/submissions", response_model=List[SubmissionOut])
+@app.get("/candidates/{candidate_id}/submissions", response_model=List[SubmissionOut]) # Allows:, candidate dashboard & recruiter review
 def list_candidate_submissions(candidate_id: str) -> List[SubmissionOut]:
     conn = db()
     cur = conn.cursor()
