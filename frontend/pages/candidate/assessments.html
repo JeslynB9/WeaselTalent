@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assessments</title>
+
+    <link rel="stylesheet" href="../../css/components/navbar.css">
+    <link rel="stylesheet" href="../../css/pages/home.css">
+    <link rel="stylesheet" href="../../css/pages/assessments.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav>
+    <div class="left-nav">
+        <img src="../../assets/images/logo.png" alt="Logo">
+        <input type="text" placeholder="Search">
+    </div>
+    <div class="links">
+        <a href="#">Home</a>
+        <a href="#">Jobs</a>
+        <a href="#">Assessments</a>
+        <a href="#">Notif</a>
+        <a href="#">Me</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- LEFT COLUMN (REUSED) -->
+    <div id="profile-column"></div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="content-column">
+
+        <div class="card">
+            <h3>Assessments</h3>
+            
+        <div class="filters">
+
+            <!-- Level -->
+            <select id="filter-level">
+                <option value="all">All Levels</option>
+                <option value="1">Level 1</option>
+                <option value="2">Level 2</option>
+                <option value="3">Level 3</option>
+                <option value="4">Level 4</option>
+            </select>
+
+            <!-- Domain -->
+            <select id="filter-domain">
+                <option value="all">All Domains</option>
+                <option value="backend">Backend</option>
+                <option value="python">Python</option>
+                <option value="frontend">Frontend</option>
+            </select>
+
+            <!-- Status -->
+            <select id="filter-status">
+                <option value="all">All Status</option>
+                <option value="completed">Completed</option>
+                <option value="available">Available</option>
+                <option value="locked">Locked</option>
+            </select>
+
+            <button id="reset-filters">Reset</button>
+
+        </div>
+
+            <div class="assessment-list">
+
+                <!-- Completed -->
+                <div class="assessment completed"
+                    data-level="1"
+                    data-domain="backend"
+                    data-status="completed">
+
+                    <span class="level level-1">Level 1</span>
+                    <h4>REST API Fundamentals</h4>
+                    <p>Build a simple REST API with CRUD operations</p>
+                    <span class="status completed">✔ Completed</span>
+                    <p class="score">🏆 Score: 92%</p>
+                </div>
+
+                <div class="assessment completed">
+                    <span class="level level-2">Level 2</span>
+                    <h4>Database Design & Optimisation</h4>
+                    <p>Design and optimise a relational database schema</p>
+                    <span class="status completed">✔ Completed</span>
+                    <p class="score">🏆 Score: 88%</p>
+                </div>
+
+                <!-- Available -->
+                <div class="assessment available"
+                    data-level="3"
+                    data-domain="backend"
+                    data-status="available">
+
+                    <span class="level level-3">Level 3</span>
+                    <h4>Microservices Architecture</h4>
+                    <p>Design a scalable microservices system</p>
+                    <button class="start">Start</button>
+                </div>
+
+                <!-- Locked -->
+                <div class="assessment locked"
+                    data-level="4"
+                    data-domain="backend"
+                    data-status="locked">
+
+                    <span class="level level-4">Level 4</span>
+                    <h4>Advanced System Design</h4>
+                    <p>Design a high-throughput distributed system</p>
+                    <span class="status locked">🔒 Locked</span>
+                </div>
+
+                <!-- Python -->
+                <div class="assessment completed"
+                    data-level="1"
+                    data-domain="backend"
+                    data-status="completed">
+
+                    <span class="level level-1">Level 1</span>
+                    <h4>Python Basics & Data Structures</h4>
+                    <p>Solve problems using Python fundamentals</p>
+                    <span class="status completed">✔ Completed</span>
+                    <p class="score">🏆 Score: 95%</p>
+                </div>
+
+                <div class="assessment available"
+                    data-level="2"
+                    data-domain="backend"
+                    data-status="available">
+
+                    <span class="level level-2">Level 2</span>
+                    <h4>Object-Oriented Python</h4>
+                    <p>Build a class-based application</p>
+                    <button class="start">Start</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../js/components/profile-column.js"></script>
+<script src="../../js/pages/assessments.js"></script>
+</body>
+</html>
