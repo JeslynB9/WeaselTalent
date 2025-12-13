@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interviews & Feedback</title>
+
+    <link rel="stylesheet" href="../../css/components/navbar.css">
+    <link rel="stylesheet" href="../../css/base/style.css">
+    <link rel="stylesheet" href="../../css/pages/interviews.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav>
+    <div class="left-nav">
+        <img src="../../assets/images/logo.png" alt="Logo">
+        <input type="text" placeholder="Search">
+    </div>
+    <div class="links">
+        <a href="#">Home</a>
+        <a href="#">Jobs</a>
+        <a href="#">Assessments</a>
+        <a href="#">Interviews</a>
+        <a href="#">Me</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- LEFT COLUMN -->
+    <div id="profile-column"></div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="content-column">
+
+    <div class="card">
+        <h3>Interview Results & Feedback</h3>
+
+        <!-- FILTERS -->
+        <div class="filters">
+            <select id="filter-result">
+                <option value="all">All Results</option>
+                <option value="passed">Passed</option>
+                <option value="failed">Failed</option>
+            </select>
+
+            <select id="filter-type">
+                <option value="all">All Types</option>
+                <option value="coding">Coding</option>
+                <option value="system">System Design</option>
+                <option value="assessment">Assessment</option>
+            </select>
+
+            <button id="reset-interview-filters">Reset</button>
+        </div>
+
+        <div class="interview-list">
+
+            <div class="interview-card"
+                data-result="failed"
+                data-type="system">
+
+                <div class="interview-header">
+                    <div>
+                        <h4>Backend Interview</h4>
+                        <p class="company">TechCorp</p>
+                        <p class="meta">System Design Assessment</p>
+                    </div>
+                    <span class="result failed">Not Selected</span>
+                </div>
+
+                <div class="actions">
+                    <button class="secondary view-feedback"
+                        data-feedback="You demonstrated strong fundamentals, but lacked depth in scalability and trade-off analysis.">
+                        View Feedback
+                    </button>
+                </div>
+            </div>
+
+            <div class="interview-card"
+                data-result="passed"
+                data-type="coding">
+
+                <div class="interview-header">
+                    <div>
+                        <h4>Python Coding Interview</h4>
+                        <p class="company">DataFlow</p>
+                        <p class="meta">Live Coding Assessment</p>
+                    </div>
+                    <span class="result passed">Passed</span>
+                </div>
+
+                <div class="actions">
+                    <button class="secondary view-feedback"
+                        data-feedback="Excellent problem-solving skills and clean code structure.">
+                        View Feedback
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    </div>
+</div>
+
+
+<script src="../../js/components/profile-column.js"></script>
+<script src="../../js/pages/interviews.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Matches</title>
+
+    <link rel="stylesheet" href="../../css/components/navbar.css">
+    <link rel="stylesheet" href="../../css/pages/jobs.css">
+    <link rel="stylesheet" href="../../css/base/style.css">
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav>
+    <div class="left-nav">
+        <img src="../../assets/images/logo.png" alt="Logo">
+        <input type="text" placeholder="Search jobs">
+    </div>
+    <div class="links">
+        <a href="#">Home</a>
+        <a href="#">Jobs</a>
+        <a href="#">Assessments</a>
+        <a href="#">Notif</a>
+        <a href="#">Me</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- LEFT COLUMN -->
+    <div id="profile-column"></div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="content-column">
+
+        <div class="card">
+            <h3>Your Job Matches</h3>
+            <p class="muted">
+                Based on your skills and assessment results, here are roles that match your profile.
+            </p>
+
+            <!-- FILTERS -->
+            <div class="filters">
+                <select id="filter-location">
+                    <option value="all">All Locations</option>
+                    <option value="remote">Remote</option>
+                    <option value="ny">New York</option>
+                    <option value="sf">San Francisco</option>
+                </select>
+
+                <select id="filter-skill">
+                    <option value="all">All Skills</option>
+                    <option value="backend">Backend</option>
+                    <option value="frontend">Frontend</option>
+                    <option value="python">Python</option>
+                    <option value="devops">DevOps</option>
+                </select>
+
+                <select id="filter-match">
+                    <option value="all">All Match %</option>
+                    <option value="90">90%+</option>
+                    <option value="80">80%+</option>
+                </select>
+
+                <button id="reset-job-filters">Reset</button>
+            </div>
+
+            <!-- JOB LIST -->
+            <div class="job-list">
+
+                <!-- JOB CARD -->
+                <div class="job-card"
+                     data-location="remote"
+                     data-skill="backend"
+                     data-match="95">
+
+                    <div class="job-header">
+                        <div>
+                            <h4>Senior Backend Engineer</h4>
+                            <p class="company">TechCorp Inc.</p>
+                            <p class="meta">🌍 Remote · 💰 $120k–$160k</p>
+                        </div>
+                        <span class="match high">95% Match</span>
+                    </div>
+
+                    <div class="tags">
+                        <span class="tag">Backend Development</span>
+                        <span class="tag">Python</span>
+                    </div>
+
+                    <div class="levels">
+                        <div>
+                            Backend Development
+                            <div class="bar level-3"></div>
+                            <small>Level 3</small>
+                        </div>
+                        <div>
+                            Python
+                            <div class="bar level-2"></div>
+                            <small>Level 2</small>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="primary">View Details</button>
+                        <button class="secondary">Schedule Interview</button>
+                    </div>
+                </div>
+
+                <!-- JOB CARD -->
+                <div class="job-card"
+                     data-location="ny"
+                     data-skill="frontend"
+                     data-match="87">
+
+                    <div class="job-header">
+                        <div>
+                            <h4>Full Stack Developer</h4>
+                            <p class="company">DataFlow Systems</p>
+                            <p class="meta">📍 New York, NY · 💰 $100k–$140k</p>
+                        </div>
+                        <span class="match mid">87% Match</span>
+                    </div>
+
+                    <div class="tags">
+                        <span class="tag">Backend Development</span>
+                        <span class="tag">Frontend Development</span>
+                    </div>
+
+                    <div class="levels">
+                        <div>
+                            Backend Development
+                            <div class="bar level-2"></div>
+                            <small>Level 2</small>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="primary">View Details</button>
+                        <button class="secondary">Schedule Interview</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../js/components/profile-column.js"></script>
+<script src="../../js/pages/jobs.js"></script>
+</body>
+</html>
