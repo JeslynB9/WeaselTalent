@@ -1,0 +1,252 @@
+/* =========================
+   THEME VARIABLES
+========================= */
+:root {
+  --bg-page: #f5f7fb;
+  --bg-card: #ffffff;
+  --border: #e2e6ef;
+
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+
+  --primary: #2563eb;
+  --primary-hover: #841dd8;
+
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+
+  --radius: 14px;
+}
+
+/* =========================
+   BASE
+========================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-main);
+}
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+h1 {
+  font-size: 26px;
+  margin: 0 0 8px;
+}
+
+h2 {
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+
+p {
+  margin: 6px 0;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+.top {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  flex: 1 1 360px;
+}
+
+.divider {
+  height: 16px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.row3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.panel {
+  margin-top: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+/* =========================
+   FORMS
+========================= */
+input, select, textarea, button {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+  height: 42px;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button.btn-remove {
+  background: transparent;
+  color: red;
+  border: none;
+  padding: 5px;
+  height: auto;
+  width: auto;
+  font-size: 12px;
+  margin-left: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Availability slots */
+.slot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #f4f2fb;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.btn-remove:hover {
+  background: #9f65f0;
+}
+
+button:hover {
+  background: var(--primary-hover);
+}
+
+button.secondary {
+  background: #eef2ff;
+  color: var(--primary);
+}
+
+button.secondary:hover {
+  background: #e0e7ff;
+}
+
+/* =========================
+   GRID
+========================= */
+.grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 0.6fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.gridHead {
+  display: grid;
+  grid-template-columns: 1.2fr 1.5fr 1fr 0.6fr auto;
+  padding: 20px;
+  padding-top: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #7a6fa5;
+  text-transform: uppercase;
+}
+
+
+/* =========================
+   CANDIDATES
+========================= */
+/* Candidate list container */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Each candidate row */
+.cand {
+  display: grid;
+  grid-template-columns: 1.2fr 1.5fr 1fr 0.6fr auto;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #faf9ff;
+  border: 1px solid #e5def8;
+}
+
+/* Remove nested clutter */
+.cand .pill {
+  margin: 0;
+}
+
+.cand .small,
+.cand .muted {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.candidates-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1.5fr 1fr 0.6fr auto;
+  align-items: center;
+}
+
+.score {
+  font-weight: 700;
+}
+
+.ok { color: var(--success); }
+.mid { color: var(--warning); }
+.bad { color: var(--danger); }
+
+/* =========================
+   UTIL
+========================= */
+.hidden {
+  display: none;
+}
+
+.toast {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #eef2ff;
+  color: var(--primary);
+}
