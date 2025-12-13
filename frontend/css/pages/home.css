@@ -158,3 +158,20 @@ body {
     font-size: 12px;
     margin-bottom: 6px;
 }
+
+.filters-home {
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.filters-home select,
+.filters-home button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+#reset-filters {
+    background: #eee;
+}
