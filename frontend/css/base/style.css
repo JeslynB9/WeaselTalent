@@ -157,6 +157,13 @@ button {
     width: 100%;
 }
 
+.container.full-width {
+    display: block;          /* disable grid */
+    max-width: none;         /* remove width cap */
+    padding: 40px 80px;      /* page margins */
+}
+
+
 /* LEFT COLUMN */
 .profile-column {
     display: flex;

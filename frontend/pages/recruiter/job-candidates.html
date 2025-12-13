@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Candidates</title>
+
+    <link rel="stylesheet" href="../../css/components/navbar.css">
+    <link rel="stylesheet" href="../../css/base/style.css">
+    <link rel="stylesheet" href="../../css/pages/job-candidates.css">
+</head>
+<body>
+
+<nav>
+    <div class="left-nav">
+        <img src="../../assets/images/logo.png" alt="Logo">
+        <input type="text" placeholder="Search candidates">
+    </div>
+    <div class="links">
+        <a href="#">Jobs</a>
+        <a href="#">Interviews</a>
+        <a href="#">Me</a>
+    </div>
+</nav>
+
+<div class="container full-width">
+
+    <div class="card">
+
+        <h3>Backend Engineer – Candidates</h3>
+
+        <!-- FILTERS -->
+        <div class="filters">
+            <select>
+                <option>All Candidates</option>
+                <option>Top 80%+</option>
+                <option>Top 90%+</option>
+            </select>
+
+            <select>
+                <option>All Status</option>
+                <option>Interviewed</option>
+                <option>Pending</option>
+            </select>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Candidate</th>
+                        <th>Assessment 1</th>
+                        <th>Assessment 2</th>
+                        <th>Assessment 3</th>
+                        <th>Interview</th>
+                        <th>Final Score</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Candidate #1024</td>
+                        <td>92</td>
+                        <td>88</td>
+                        <td>90</td>
+                        <td>85</td>
+                        <td class="final-score">89%</td>
+                    </tr>
+
+                    <tr>
+                        <td>Candidate #2048</td>
+                        <td>85</td>
+                        <td>82</td>
+                        <td>80</td>
+                        <td>78</td>
+                        <td class="final-score">81%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="muted">
+            Final score is calculated as the average of all assessments and interview results.
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>
