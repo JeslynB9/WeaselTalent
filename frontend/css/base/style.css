@@ -110,3 +110,14 @@ button {
     color: #8a2be2;
     text-decoration: none;
 }
+
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 14px;
+    background-color: #e0e0e0;
+}
