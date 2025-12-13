@@ -32,31 +32,47 @@
 ### NOTIFICATIONS
     # Notifications: notification_id, user_id, type, message, is_read, created_at 
 
-from pydantic import BaseModel, Field
-from typing import Any, Dict, List, Optional
+from sqlalchemy import (
+    Column, 
+    Integer,
+    String, 
+    Boolean, 
+    DateTime,
+)
 
+from datetime import datetime, timezone
+from db import Base
 
-# Defines what /assessments returns
-class AssessmentOut(BaseModel): 
-    id: str
-    track: str
-    level: int
-    title: str
-    prompt: str
-    rubric: Dict[str, Any]
+## Users table
+class User(Base):
+    __tablename__ = "users"
 
-# Defines what frontend must send when submitting: score, feedback, timestamp)
-class SubmissionIn(BaseModel): 
-    candidate_id: str = Field(..., min_length=1, description="Anonymous candidate identifier, e.g., cand-0001")
-    assessment_id: str = Field(..., min_length=1)
-    answer_text: str = Field(..., min_length=10, description="Candidate response (text or pasted code).")
+    user_id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, nullable=False)
+    password_hash = Column(String, nullable=False)
+    role = Column(String, nullable=False)
 
-# Defines what backend returns after submission:
-class SubmissionOut(BaseModel): 
-    id: int
-    candidate_id: str
-    assessment_id: str
-    answer_text: str
-    score: Optional[int] = None
-    feedback: Optional[str] = None
-    created_at: str
+    created_at = Column (
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    last_login = Column(DateTime(timezone=True), nullable=True)
+    is_active = Column(Boolean, default=True, nullable=False)
+
+## Assessment table
+class Assessment(Base):
+    __tablename__ = "assessments"
+
+    assessment_id = Column(Integer, primary_key=True, index=True)
+    # scaffold that will be used to create the assessment
+    scaffold_id = Column(Integer, nullable=False)
+    generated_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    time_limit_minutes = Column(Integer, nullable=True)
+    is_active = Column(Boolean, default=True, nullable=False)
