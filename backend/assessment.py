@@ -5,11 +5,37 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
-from models import AssessmentOut, SubmissionIn, SubmissionOut
-
 
 DB_PATH = "assessments.db" #SQLite database file
 app = FastAPI(title="Lyrathon Assessments Backend", version="0.1.0") #FastAPI now listens for HTTP requests
+
+# ----------------------------
+# Pydantic Models (API schemas)
+# ----------------------------
+# Models define the structure of data sent and received via the API
+class AssessmentOut(BaseModel):
+    id: str
+    track: str
+    level: int
+    title: str
+    prompt: str
+    rubric: Dict[str, Any]
+
+# Models for submission input/output
+class SubmissionIn(BaseModel):
+    candidate_id: str
+    assessment_id: str
+    answer_text: str
+
+# Models for submission output
+class SubmissionOut(BaseModel):
+    id: int
+    candidate_id: str
+    assessment_id: str
+    answer_text: str
+    score: Optional[int]
+    feedback: Optional[str]
+    created_at: str
 
 # ----------------------------
 # Database helpers
