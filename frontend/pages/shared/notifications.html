@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notifications</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../css/components/navbar.css">
+    <link rel="stylesheet" href="../../css/pages/profile.css">
+    <link rel="stylesheet" href="../../css/pages/notifications.css">
+    <link rel="stylesheet" href="../../css/base/style.css">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <div class="left-nav">
+        <img src="../../assets/images/logo.png" alt="Logo">
+        <input type="text" placeholder="Search">
+    </div>
+    <div class="links">
+        <a href="../../pages/candidate/home.html">Home</a>
+        <a href="../../pages/candidate/jobs.html">Jobs</a>
+        <a href="../../pages/candidate/assessments.html">Assessments</a>
+        <a href="../../pages/candidate/interviews.html">Interviews</a>
+        <a href="../../pages/shared/notifications.html">Notifications</a>
+        <a href="../../pages/shared/profile.html">Me</a>
+    </div>
+</nav>
+
+<!-- NOTIFICATIONS CONTENT -->
+<div class="profile-container">
+
+    <section class="card">
+        <div class="card-header">
+            <h3>Notifications</h3>
+        </div>
+        <p class="muted">Here are your recent notifications:</p>
+
+        <div class="notifications-list">
+
+            <div class="notification-item">
+                <strong>New Assessment Available</strong>
+                <p>Your "Python Fundamentals" assessment is now available. <span class="time">2 hours ago</span></p>
+                <button class="primary">View</button>
+            </div>
+
+            <div class="notification-item">
+                <strong>Interview Scheduled</strong>
+                <p>You have an interview with Google scheduled for 15 Dec 2025. <span class="time">1 day ago</span></p>
+                <button class="primary">Details</button>
+            </div>
+
+            <div class="notification-item">
+                <strong>Job Match</strong>
+                <p>We found a new job that matches your profile: "Data Analyst at Microsoft". <span class="time">3 days ago</span></p>
+                <button class="primary">Apply</button>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+<!-- Script -->
+<script src="../../js/components/navbar.js"></script>
+
+</body>
+</html>

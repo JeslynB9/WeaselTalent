@@ -80,6 +80,23 @@ body {
     margin-top: 20px;
 }
 
+.card .grid .item h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+}
+
+.card .grid .item .company {
+    font-weight: bold;
+    color: #4a3f69;
+    margin: 0 0 5px 0;
+}
+
+.card .grid .item .desc {
+    font-size: 0.9em;
+    color: #333;
+    margin: 0;
+}
+
 .card .grid .item {
     background-color: #e0d4f7;
     padding: 15px;
@@ -98,8 +115,63 @@ body {
     margin: 0 0 5px 0;
 }
 
-.card .grid .item .desc {
+.card .grid .item .level {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.desc-button {
+    display: flex;
+    justify-content: space-between; /* pushes button to right */
+    align-items: center;
+    gap: 10px;
+}
+
+.desc-button .desc {
+    margin: 0;
     font-size: 0.9em;
     color: #333;
-    margin: 0;
+}
+
+.start-button-home {
+    background: #b546ff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.level-1 { background: #dcfce7; }
+.level-2 { background: #e0e7ff; }
+.level-3 { background: #ede9fe; }
+.level-4 { background: #fee2e2; }
+
+.level {
+    display: inline-block; /* keep label size natural */
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.filters-home {
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.filters-home select,
+.filters-home button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+#reset-filters {
+    background: #eee;
 }
