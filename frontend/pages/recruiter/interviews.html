@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Interviews</title>
+
+    <link rel="stylesheet" href="../../css/components/navbar.css">
+    <link rel="stylesheet" href="../../css/base/style.css">
+    <link rel="stylesheet" href="../../css/pages/recruiter-interviews.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav>
+    <div class="left-nav">
+        <img src="../../assets/images/logo.png" alt="Logo">
+        <input type="text" placeholder="Search candidates">
+    </div>
+    <div class="links">
+        <a href="#">Home</a>
+        <a href="#">Jobs</a>
+        <a href="#">Assessments</a>
+        <a href="#">Interviews</a>
+        <a href="#">Me</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- LEFT COLUMN -->
+    <div id="recruiter-column"></div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="content-column">
+
+        <div class="card">
+            <h3>Available Interviews</h3>
+            <p class="muted">
+                Candidates who have completed required assessments and are ready for interviews.
+            </p>
+
+            <!-- FILTERS -->
+            <div class="filters">
+                <select id="filter-role">
+                    <option value="all">All Roles</option>
+                    <option value="backend">Backend Engineer</option>
+                    <option value="frontend">Frontend Engineer</option>
+                </select>
+
+                <select id="filter-match">
+                    <option value="all">All Match %</option>
+                    <option value="90">90%+</option>
+                    <option value="80">80%+</option>
+                </select>
+
+                <button id="reset-filters">Reset</button>
+            </div>
+
+            <!-- CANDIDATE LIST -->
+            <div class="candidate-list">
+
+                <!-- CANDIDATE CARD -->
+                <div class="candidate-card"
+                     data-role="backend"
+                     data-match="94">
+
+                    <div class="candidate-header">
+                        <div>
+                            <h4>Candidate #1024</h4>
+                            <p class="meta">Backend Engineer · Python</p>
+                        </div>
+                        <span class="match high">94% Match</span>
+                    </div>
+
+                    <div class="tags">
+                        <span class="tag">Backend</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">System Design</span>
+                    </div>
+
+                    <div class="summary">
+                        <p><strong>Assessment Highlights:</strong></p>
+                        <ul>
+                            <li>REST API Design — 92%</li>
+                            <li>Database Optimisation — 88%</li>
+                            <li>System Design — Passed</li>
+                        </ul>
+                    </div>
+
+                    <div class="actions">
+                        <button class="primary">View Profile</button>
+                        <button class="secondary">Request Interview</button>
+                    </div>
+                </div>
+
+                <!-- CANDIDATE CARD -->
+                <div class="candidate-card"
+                     data-role="backend"
+                     data-match="82">
+
+                    <div class="candidate-header">
+                        <div>
+                            <h4>Candidate #2048</h4>
+                            <p class="meta">Backend Engineer · DevOps</p>
+                        </div>
+                        <span class="match mid">82% Match</span>
+                    </div>
+
+                    <div class="tags">
+                        <span class="tag">Backend</span>
+                        <span class="tag">DevOps</span>
+                    </div>
+
+                    <div class="summary">
+                        <p><strong>Assessment Highlights:</strong></p>
+                        <ul>
+                            <li>Microservices — Passed</li>
+                            <li>CI/CD Fundamentals — 85%</li>
+                        </ul>
+                    </div>
+
+                    <div class="actions">
+                        <button class="primary">View Profile</button>
+                        <button class="secondary">Request Interview</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="../../js/components/recruiter-column.js"></script>
+<script src="../../js/pages/recruiter-interviews.js"></script>
+</body>
+</html>
