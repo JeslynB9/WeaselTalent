@@ -1,6 +1,30 @@
 // ---------------------------
-// Helpers
+// API Integration
 // ---------------------------
+
+async function fetchCandidates() {
+    try {
+        const response = await fetch(`${API_BASE}/recruiters/1/pipeline`);
+        if (!response.ok) throw new Error('Failed to fetch candidates');
+        const data = await response.json();
+        // Map to expected format (adjust based on backend response)
+        return data.map(item => ({
+            id: item.candidate_id.toString(),
+            lastActive: item.last_updated,
+            skills: [], // Add if available
+            domains: [], // Add if available
+            assessments: [] // Add if available
+        }));
+    } catch (error) {
+        console.error('Error fetching candidates:', error);
+        return CANDIDATES; // Fallback to mock
+    }
+}
+
+async function fetchJobs() {
+    // For now, return mock; add endpoint if needed
+    return JOBS;
+}
 
 const $ = (id) => document.getElementById(id);
 
@@ -320,7 +344,13 @@ function closeDrawer() {
 // Init
 // ---------------------------
 
-function init() {
+async function init() {
+    // Fetch data from backend
+    const jobsData = await fetchJobs();
+    window.JOBS = jobsData; // Make global for now
+    const candidatesData = await fetchCandidates();
+    window.CANDIDATES = candidatesData;
+
     initJobs();
     initDomainFilter();
     renderSlots();
@@ -328,7 +358,7 @@ function init() {
 
     // Events
     $("refreshBtn").addEventListener("click", () => {
-        showStatus("Refreshed (demo).");
+        showStatus("Refreshed.");
         renderList();
     });
 
