@@ -1,0 +1,58 @@
+/* Layout is inherited from base container styles */
+
+.profile-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.content-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Text areas */
+
+textarea {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+/* Rating stars */
+
+.rating {
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.star {
+    color: #ccc;
+    margin-right: 6px;
+}
+
+.star.active {
+    color: #000;
+}
+
+/* Actions */
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.primary {
+    background: #b57be5;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+}
