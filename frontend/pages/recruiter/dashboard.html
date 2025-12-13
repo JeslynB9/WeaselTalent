@@ -2,109 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Recruiter Dashboard (Demo)</title>
-  <style>
-    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body { margin: 0; background: #0b0f19; color: #e9eefc; }
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 26px 16px 60px; }
-    .top { display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap; }
-    .card {
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 16px;
-      padding: 16px;
-      flex: 1 1 360px;
-    }
-    h1 { margin: 0 0 8px; font-size: 26px; }
-    h2 { margin: 0 0 10px; font-size: 16px; color: rgba(233,238,252,.9); }
-    p { margin: 8px 0 0; color: rgba(233,238,252,.78); font-size: 14px; }
-    .muted { color: rgba(233,238,252,.65); font-size: 13px; }
-    .row { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top: 10px; }
-    .row3 { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top: 10px; }
-    input, select, textarea, button {
-      width: 100%;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.2);
-      color: #e9eefc;
-      padding: 10px 12px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-    textarea { min-height: 88px; resize: vertical; }
-    button { cursor: pointer; background: rgba(107, 88, 255, .35); }
-    button:hover { background: rgba(107, 88, 255, .5); }
-    button.secondary { background: rgba(255,255,255,.08); }
-    button.secondary:hover { background: rgba(255,255,255,.12); }
-    .pill {
-      display:inline-flex; gap:8px; align-items:center;
-      padding: 8px 10px; border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
-      font-size: 13px;
-    }
-    .grid {
-      display:grid;
-      grid-template-columns: 1.2fr .9fr .9fr .9fr auto;
-      gap:10px;
-      margin-top: 14px;
-      align-items:center;
-    }
-    .gridHead {
-      font-size: 12px;
-      color: rgba(233,238,252,.65);
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      padding: 0 2px;
-      margin-top: 10px;
-    }
-    .cand {
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-    }
-    .score {
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-    }
-    .ok { color: #b7ffcf; }
-    .mid { color: #ffe7a6; }
-    .bad { color: #ffc3c3; }
-    .badge { display:inline-flex; padding: 4px 8px; border-radius: 999px; border: 1px solid rgba(255,255,255,.14); font-size: 12px; }
-    .divider { height: 14px; }
-    .panel {
-      margin-top: 14px;
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-    .twoCol { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 920px) {
-      .grid { grid-template-columns: 1fr; }
-      .twoCol { grid-template-columns: 1fr; }
-    }
-    .hidden { display:none; }
-    .linkish { color: rgba(183, 255, 207, .95); text-decoration: underline; cursor:pointer; }
-    .small { font-size: 12px; color: rgba(233,238,252,.6); }
-    .toast {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Recruiter Dashboard</title>
+
+
+  <link rel="stylesheet" href="../../css/pages/recruiter/recruiter-dashboard.css" />
+  <link rel="stylesheet" href="../../css/components/navbar.css">
+  <link rel="stylesheet" href="../../css/base/style.css">
 </head>
+
+<nav>
+    <div class="left-nav">
+        <img src="../../assets/images/logo.png" alt="Logo">
+        <input type="text" placeholder="Search jobs">
+    </div>
+    <div class="links">
+        <a href="../../pages/candidate/home.html">Home</a>
+        <a href="../../pages/candidate/jobs.html">Jobs</a>
+        <a href="../../pages/candidate/assessments.html">Assessments</a>
+        <a href="../../pages/candidate/interviews.html">Interviews</a>
+        <a href="../../pages/shared/notifications.html">Notifications</a>
+        <a href="../../pages/shared/profile.html">Me</a>
+    </div>
+</nav>
+
 
 <body>
   <div class="wrap">
     <div class="top">
       <div class="card">
         <h1>Recruiter Dashboard</h1>
-        <p class="muted">Demo UI: view anonymised candidates, filter by role, review scores, add notes, and schedule interviews.</p>
+        <p class="muted">
+          View anonymised candidates, filter by role, review scores, add notes, and schedule interviews.
+        </p>
+
         <div class="divider"></div>
+
         <div class="row">
           <select id="jobSelect"></select>
           <select id="minScore">
@@ -115,6 +48,7 @@
             <option value="80">Min match score: 80</option>
           </select>
         </div>
+
         <div class="row">
           <select id="domainFilter">
             <option value="ALL">Domain: All</option>
@@ -125,30 +59,37 @@
             <option value="recentDesc">Sort: Recently active</option>
           </select>
         </div>
+
         <div class="divider"></div>
+
         <div class="row">
           <input id="search" placeholder="Search (skills / domain / candidate ID)..." />
-          <button id="refreshBtn" class="secondary">Refresh (demo)</button>
+          <button id="refreshBtn" class="secondary">Refresh</button>
         </div>
+
         <div id="status" class="toast hidden"></div>
       </div>
 
       <div class="card">
         <h2>Recruiter Availability</h2>
-        <p class="muted">Set your interview slots. Candidates can only book within these windows.</p>
+        <p class="muted">Set interview time slots.</p>
+
         <div class="divider"></div>
+
         <div class="row3">
           <select id="availDay">
-            <option>Mon</option><option>Tue</option><option>Wed</option><option>Thu</option><option>Fri</option>
+            <option>Mon</option><option>Tue</option><option>Wed</option>
+            <option>Thu</option><option>Fri</option>
           </select>
           <input id="availStart" type="time" value="10:00" />
           <input id="availEnd" type="time" value="16:00" />
         </div>
+
         <div class="divider"></div>
         <button id="addSlotBtn">Add availability slot</button>
+
         <div class="divider"></div>
         <div id="slots"></div>
-        <div class="small">Tip: This is front-end only. In a real app, slots save to DB and feed the scheduling engine.</div>
       </div>
     </div>
 
@@ -158,468 +99,22 @@
       <h2>Candidates</h2>
       <div id="meta" class="muted"></div>
 
-      <div class="gridHead grid">
-        <div>Candidate (Anonymous)</div>
-        <div>Domains / Skills</div>
+      <div class="gridHead">
+        <div>Candidate</div>
+        <div>Domains</div>
         <div>Assessments</div>
-        <div>Match Score</div>
+        <div>Match</div>
         <div>Actions</div>
       </div>
 
       <div id="list" class="panel"></div>
     </div>
 
-    <div class="divider"></div>
-
-    <div id="drawer" class="card hidden">
-      <h2>Candidate Review</h2>
-      <div class="muted" id="drawerMeta"></div>
-      <div class="divider"></div>
-
-      <div class="twoCol">
-        <div class="cand">
-          <div class="pill">Assessment Summary</div>
-          <div id="assessmentsBox" class="divider"></div>
-          <div id="assessmentsDetail"></div>
-        </div>
-
-        <div class="cand">
-          <div class="pill">Recruiter Notes + Rating</div>
-          <div class="divider"></div>
-          <div class="row">
-            <select id="rating">
-              <option value="">Rate fit (1–10)</option>
-              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-              <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-            </select>
-            <button id="saveNoteBtn">Save</button>
-          </div>
-          <div class="divider"></div>
-          <textarea id="notes" placeholder="Write notes from the interview / screening..."></textarea>
-          <div class="divider"></div>
-          <div class="pill">Saved Notes</div>
-          <div class="divider"></div>
-          <div id="savedNotes" class="muted">No notes yet.</div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="cand">
-        <div class="pill">Schedule Interview</div>
-        <p class="muted">Pick a slot from your availability. (Demo: it “books” locally.)</p>
-        <div class="row">
-          <select id="slotPick"></select>
-          <button id="bookBtn">Book Interview</button>
-        </div>
-        <div class="divider"></div>
-        <div id="bookingStatus" class="muted"></div>
-      </div>
-
-      <div class="divider"></div>
-      <button id="closeDrawerBtn" class="secondary">Close</button>
-    </div>
+    <div id="drawer" class="card hidden"></div>
   </div>
 
-  <script>
-    // ---------------------------
-    // Mock data (frontend only)
-    // ---------------------------
+  <script src="../../js/pages/recruiter/recruiter-dashboard.mock.js"></script>
+  <script src="../../js/pages/recruiter/recruiter-dashboard.js"></script>
 
-    const JOBS = [
-      { id: "job_1", title: "Backend Intern (Node.js)", requirements: ["Node.js", "APIs", "SQL", "Git"] },
-      { id: "job_2", title: "C++ Backend Engineer (Junior)", requirements: ["C++", "Data Structures", "APIs", "Performance"] },
-      { id: "job_3", title: "Data / Platform Intern", requirements: ["SQL", "Python", "ETL", "APIs"] }
-    ];
-
-    // Candidate is anonymous: show only Candidate ID + skills + assessments
-    const CANDIDATES = [
-      {
-        id: "CND-1048",
-        lastActive: "2025-12-13T08:52:00+11:00",
-        skills: ["Node.js", "APIs", "SQL", "Express"],
-        domains: ["Node.js", "APIs", "SQL"],
-        assessments: [
-          { domain: "Node.js", level: 2, score: 7, total: 10 },
-          { domain: "APIs", level: 2, score: 8, total: 10 },
-          { domain: "SQL", level: 1, score: 6, total: 10 }
-        ]
-      },
-      {
-        id: "CND-2091",
-        lastActive: "2025-12-12T20:12:00+11:00",
-        skills: ["C++", "STL", "Memory", "Networking"],
-        domains: ["C++ Backend", "APIs"],
-        assessments: [
-          { domain: "C++ Backend", level: 3, score: 9, total: 10 },
-          { domain: "APIs", level: 1, score: 5, total: 10 }
-        ]
-      },
-      {
-        id: "CND-3307",
-        lastActive: "2025-12-10T18:05:00+11:00",
-        skills: ["SQL", "Python", "Pandas", "ETL"],
-        domains: ["SQL", "APIs"],
-        assessments: [
-          { domain: "SQL", level: 3, score: 8, total: 10 },
-          { domain: "APIs", level: 2, score: 7, total: 10 }
-        ]
-      },
-      {
-        id: "CND-7780",
-        lastActive: "2025-12-13T09:40:00+11:00",
-        skills: ["Node.js", "React", "MongoDB"],
-        domains: ["Node.js"],
-        assessments: [
-          { domain: "Node.js", level: 1, score: 5, total: 10 }
-        ]
-      }
-    ];
-
-    // Availability slots (local only)
-    let availability = [
-      { id: "slot_1", day: "Tue", start: "10:00", end: "12:00" },
-      { id: "slot_2", day: "Thu", start: "14:00", end: "16:00" }
-    ];
-
-    // Notes store (local only)
-    const NOTES = {}; // { [candidateId]: { rating: string, notes: string, savedAt: string } }
-
-    // Bookings store (local only)
-    const BOOKINGS = []; // { candidateId, jobId, slotId, when }
-
-    // ---------------------------
-    // Helpers
-    // ---------------------------
-
-    const $ = (id) => document.getElementById(id);
-
-    function scoreColor(score) {
-      if (score >= 80) return "ok";
-      if (score >= 60) return "mid";
-      return "bad";
-    }
-
-    function toHumanDate(iso) {
-      const d = new Date(iso);
-      return d.toLocaleString(undefined, { weekday: "short", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
-    }
-
-    function computeMatchScore(candidate, job) {
-      const req = job.requirements.map(r => r.toLowerCase());
-      const skills = candidate.skills.map(s => s.toLowerCase());
-
-      let matches = 0;
-      req.forEach(r => {
-        if (skills.some(s => s.includes(r) || r.includes(s))) matches++;
-      });
-
-      const total = req.length || 1;
-      let score = Math.round((matches / total) * 100);
-      if (score > 95) score = 95;
-      return { score, matches, total };
-    }
-
-    function overallAssessmentPercent(candidate) {
-      const totals = candidate.assessments.reduce((acc, a) => {
-        acc.score += a.score; acc.total += a.total;
-        return acc;
-      }, { score: 0, total: 0 });
-
-      if (!totals.total) return 0;
-      return Math.round((totals.score / totals.total) * 100);
-    }
-
-    function uniqDomains() {
-      const s = new Set();
-      CANDIDATES.forEach(c => c.domains.forEach(d => s.add(d)));
-      return Array.from(s).sort();
-    }
-
-    function showStatus(text) {
-      const el = $("status");
-      el.textContent = text;
-      el.classList.remove("hidden");
-      setTimeout(() => el.classList.add("hidden"), 2200);
-    }
-
-    // ---------------------------
-    // Render controls
-    // ---------------------------
-
-    function initJobs() {
-      $("jobSelect").innerHTML = JOBS.map(j => `<option value="${j.id}">${j.title}</option>`).join("");
-    }
-
-    function initDomainFilter() {
-      const doms = uniqDomains();
-      $("domainFilter").innerHTML = `<option value="ALL">Domain: All</option>` + doms.map(d => `<option value="${d}">${d}</option>`).join("");
-    }
-
-    function renderSlots() {
-      const container = $("slots");
-      if (!availability.length) {
-        container.innerHTML = `<div class="muted">No availability yet.</div>`;
-        return;
-      }
-      container.innerHTML = availability.map(s => `
-        <div class="pill" style="margin:6px 6px 0 0;">
-          ${s.day} ${s.start}–${s.end}
-          <span class="linkish" data-del="${s.id}" style="margin-left:8px;">remove</span>
-        </div>
-      `).join("");
-
-      container.querySelectorAll("[data-del]").forEach(el => {
-        el.addEventListener("click", () => {
-          const id = el.getAttribute("data-del");
-          availability = availability.filter(x => x.id !== id);
-          renderSlots();
-          showStatus("Availability removed.");
-        });
-      });
-    }
-
-    // ---------------------------
-    // Render candidate list
-    // ---------------------------
-
-    function getFilteredCandidates() {
-      const job = JOBS.find(j => j.id === $("jobSelect").value);
-      const minScore = Number($("minScore").value);
-      const domain = $("domainFilter").value;
-      const sortBy = $("sortBy").value;
-      const q = $("search").value.trim().toLowerCase();
-
-      let items = CANDIDATES.map(c => {
-        const ms = computeMatchScore(c, job);
-        return { ...c, matchScore: ms.score, matchMeta: ms };
-      });
-
-      items = items.filter(c => c.matchScore >= minScore);
-
-      if (domain !== "ALL") {
-        items = items.filter(c => c.domains.includes(domain));
-      }
-
-      if (q) {
-        items = items.filter(c =>
-          c.id.toLowerCase().includes(q) ||
-          c.skills.some(s => s.toLowerCase().includes(q)) ||
-          c.domains.some(d => d.toLowerCase().includes(q))
-        );
-      }
-
-      if (sortBy === "scoreDesc") items.sort((a,b) => b.matchScore - a.matchScore);
-      if (sortBy === "scoreAsc") items.sort((a,b) => a.matchScore - b.matchScore);
-      if (sortBy === "recentDesc") items.sort((a,b) => new Date(b.lastActive) - new Date(a.lastActive));
-
-      return items;
-    }
-
-    function renderList() {
-      const job = JOBS.find(j => j.id === $("jobSelect").value);
-      const items = getFilteredCandidates();
-
-      $("meta").textContent = `${items.length} candidates shown • Job requirements: ${job.requirements.join(", ")}`;
-
-      const list = $("list");
-      if (!items.length) {
-        list.innerHTML = `<div class="muted">No candidates match your filters.</div>`;
-        return;
-      }
-
-      list.innerHTML = items.map(c => {
-        const assessPct = overallAssessmentPercent(c);
-        const scoreClass = scoreColor(c.matchScore);
-
-        return `
-          <div class="cand">
-            <div class="grid">
-              <div>
-                <div class="pill"><strong>${c.id}</strong></div>
-                <div class="muted" style="margin-top:6px;">Last active: ${toHumanDate(c.lastActive)}</div>
-              </div>
-              <div>
-                <div class="muted">${c.domains.join(", ")}</div>
-                <div class="small">Skills: ${c.skills.join(", ")}</div>
-              </div>
-              <div>
-                <div class="pill">Overall: <strong>${assessPct}%</strong></div>
-                <div class="small">${c.assessments.length} assessment(s)</div>
-              </div>
-              <div>
-                <div class="score ${scoreClass}">${c.matchScore}%</div>
-                <div class="small">${c.matchMeta.matches}/${c.matchMeta.total} req overlap</div>
-              </div>
-              <div>
-                <button data-open="${c.id}">Review</button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      list.querySelectorAll("[data-open]").forEach(btn => {
-        btn.addEventListener("click", () => openDrawer(btn.getAttribute("data-open")));
-      });
-    }
-
-    // ---------------------------
-    // Drawer (candidate review)
-    // ---------------------------
-
-    let activeCandidateId = null;
-
-    function renderSlotPicker() {
-      const pick = $("slotPick");
-      if (!availability.length) {
-        pick.innerHTML = `<option value="">No availability slots</option>`;
-        return;
-      }
-      pick.innerHTML = availability.map(s => `<option value="${s.id}">${s.day} ${s.start}–${s.end}</option>`).join("");
-    }
-
-    function openDrawer(candidateId) {
-      activeCandidateId = candidateId;
-      const c = CANDIDATES.find(x => x.id === candidateId);
-      const job = JOBS.find(j => j.id === $("jobSelect").value);
-
-      const ms = computeMatchScore(c, job);
-      $("drawerMeta").innerHTML = `
-        <div class="pill">Candidate: <strong>${c.id}</strong></div>
-        <div class="pill">Job: <strong>${job.title}</strong></div>
-        <div class="pill">Match: <strong class="${scoreColor(ms.score)}">${ms.score}%</strong></div>
-        <div class="pill">Last active: <strong>${toHumanDate(c.lastActive)}</strong></div>
-      `;
-
-      $("assessmentsDetail").innerHTML = c.assessments.map(a => {
-        const pct = Math.round((a.score / a.total) * 100);
-        return `
-          <div class="q">
-            <div><strong>${a.domain}</strong> <span class="badge">Level ${a.level}</span></div>
-            <div class="muted">Score: ${a.score}/${a.total} (${pct}%)</div>
-          </div>
-        `;
-      }).join("");
-
-      $("assessmentsBox").innerHTML = `<div class="muted">${c.assessments.length} completed • Overall: ${overallAssessmentPercent(c)}%</div>`;
-
-      // Notes
-      const saved = NOTES[candidateId];
-      $("rating").value = saved?.rating ?? "";
-      $("notes").value = saved?.notes ?? "";
-      $("savedNotes").textContent = saved
-        ? `Rating: ${saved.rating}/10 • Saved: ${toHumanDate(saved.savedAt)}\n\n${saved.notes}`
-        : "No notes yet.";
-
-      // Slot picker
-      renderSlotPicker();
-      $("bookingStatus").textContent = "";
-
-      // Show drawer
-      $("drawer").classList.remove("hidden");
-      window.scrollTo({ top: $("drawer").offsetTop - 12, behavior: "smooth" });
-    }
-
-    function closeDrawer() {
-      activeCandidateId = null;
-      $("drawer").classList.add("hidden");
-    }
-
-    // ---------------------------
-    // Events
-    // ---------------------------
-
-    $("refreshBtn").addEventListener("click", () => {
-      showStatus("Refreshed (demo).");
-      renderList();
-    });
-
-    ["jobSelect","minScore","domainFilter","sortBy"].forEach(id => {
-      $(id).addEventListener("change", () => renderList());
-    });
-
-    $("search").addEventListener("input", () => renderList());
-
-    $("addSlotBtn").addEventListener("click", () => {
-      const day = $("availDay").value;
-      const start = $("availStart").value;
-      const end = $("availEnd").value;
-
-      if (!start || !end) return showStatus("Please enter start and end time.");
-      if (end <= start) return showStatus("End time must be after start time.");
-
-      const id = "slot_" + Math.random().toString(16).slice(2);
-      availability.push({ id, day, start, end });
-      renderSlots();
-      showStatus("Availability added.");
-      renderSlotPicker();
-    });
-
-    $("saveNoteBtn").addEventListener("click", () => {
-      if (!activeCandidateId) return;
-
-      const rating = $("rating").value;
-      const notes = $("notes").value.trim();
-
-      if (!rating || !notes) {
-        return showStatus("Add a rating and notes before saving.");
-      }
-
-      NOTES[activeCandidateId] = {
-        rating,
-        notes,
-        savedAt: new Date().toISOString()
-      };
-
-      $("savedNotes").textContent = `Rating: ${rating}/10 • Saved: ${toHumanDate(NOTES[activeCandidateId].savedAt)}\n\n${notes}`;
-      showStatus("Notes saved.");
-    });
-
-    $("bookBtn").addEventListener("click", () => {
-      if (!activeCandidateId) return;
-
-      const jobId = $("jobSelect").value;
-      const slotId = $("slotPick").value;
-
-      if (!slotId) {
-        $("bookingStatus").textContent = "No slot selected.";
-        return;
-      }
-
-      // Prevent double booking same candidate+job
-      const exists = BOOKINGS.some(b => b.candidateId === activeCandidateId && b.jobId === jobId);
-      if (exists) {
-        $("bookingStatus").textContent = "Already booked for this candidate + job (demo).";
-        return;
-      }
-
-      const slot = availability.find(s => s.id === slotId);
-      BOOKINGS.push({ candidateId: activeCandidateId, jobId, slotId, when: new Date().toISOString() });
-
-      $("bookingStatus").innerHTML = `
-        <span class="ok"><strong>Booked!</strong></span>
-        Interview scheduled for <strong>${slot.day} ${slot.start}–${slot.end}</strong>.
-      `;
-
-      showStatus("Interview booked.");
-    });
-
-    $("closeDrawerBtn").addEventListener("click", closeDrawer);
-
-    // ---------------------------
-    // Init
-    // ---------------------------
-
-    function init() {
-      initJobs();
-      initDomainFilter();
-      renderSlots();
-      renderList();
-    }
-
-    init();
-  </script>
 </body>
 </html>
-
