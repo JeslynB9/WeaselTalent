@@ -1,10 +1,4 @@
 /* =========================================================
-   IMPORTS
-   ========================================================= */
-@import "variables.css";
-@import "typography.css";
-
-/* =========================================================
    GLOBAL RESET & BASE
    ========================================================= */
 * {
@@ -12,14 +6,11 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* AUTH PAGE WRAPPER */
 body {
     margin: 0;
     height: 100vh;
     background-color: #f3ddff;
-    display: flex;
 }
-
 
 /* =========================================================
    AUTH / LOGIN PAGE LAYOUT
@@ -60,19 +51,10 @@ body {
 
 /* RIGHT PANEL */
 .right {
-    width: 34%;
-    background: white;  
+    width: 33%;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.left, .right {
-    height: 100vh;
-}
-
-.left {
-    overflow: auto;
 }
 
 /* LOGIN CARD */
