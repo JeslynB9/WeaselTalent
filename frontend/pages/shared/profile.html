@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../css/components/navbar.css">
+    <link rel="stylesheet" href="../../css/pages/profile.css">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Script -->
+    <script src="../../js/pages/profile.js"></script>
+</head>
+<body>
+
+<!-- NAVBAR (reused) -->
+<nav>
+    <div class="left-nav">
+        <img src="../../assets/images/logo.png" alt="Logo">
+        <input type="text" placeholder="Search">
+    </div>
+    <div class="links">
+        <a href="#">Home</a>
+        <a href="#">Jobs</a>
+        <a href="#">Assessments</a>
+        <a href="#">Notif</a>
+        <a href="#">Me</a>
+    </div>
+</nav>
+
+<!-- PROFILE CONTENT -->
+<div class="profile-container">
+
+    <!-- Account Settings -->
+    <section class="card">
+        <h2>Account Settings</h2>
+
+        <div class="toggle-row">
+            <div>
+                <strong>Anonymous Profile</strong>
+                <p>Hide your name and photo from recruiters</p>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="anon-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <label>Email</label>
+        <input type="email" value="asdf@sfd.dsfg">
+
+        <label>Password</label>
+        <input type="password" placeholder="********">
+
+        <label>Full Name</label>
+        <input type="text" value="asdf">
+
+        <button class="primary">Save Changes</button>
+    </section>
+
+    <!-- Technical Domains -->
+    <section class="card">
+        <h2>Select Your Technical Domains</h2>
+        <p class="muted">Choose the skills you want to be evaluated in.</p>
+
+        <div class="domains">
+            <div class="domain selected">Backend Development</div>
+            <div class="domain">Frontend Development</div>
+            <div class="domain">C++ Programming</div>
+            <div class="domain selected">Python Development</div>
+            <div class="domain">Data Analysis</div>
+            <div class="domain">Machine Learning</div>
+            <div class="domain">DevOps</div>
+            <div class="domain">Cloud Architecture</div>
+            <div class="domain">Cybersecurity</div>
+        </div>
+
+        <div class="actions-right">
+            <button class="primary">Save Skills</button>
+        </div>
+    </section>
+
+    <!-- Skill Levels -->
+    <section class="card">
+        <h2>Skill Levels</h2>
+        <p class="muted">
+            Select which skills are visible on your profile. Your current level is shown.
+        </p>
+
+        <div class="skills">
+
+        <div class="skill-card" data-skill="python">
+            <div>
+                <strong>Python</strong>
+                <div class="level-indicator level-3">Level 3</div>
+            </div>
+
+            <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+            <div class="skill-card">
+                <div>
+                    <strong>SQL</strong>
+                    <div class="level-indicator level-4">Level 4</div>
+                </div>
+
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="skill-card">
+                <div>
+                    <strong>C++</strong>
+                    <div class="level-indicator level-2">Level 2</div>
+                </div>
+
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="skill-card">
+                <div>
+                    <strong>Machine Learning</strong>
+                    <div class="level-indicator level-1">Level 1</div>
+                </div>
+
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+        </div>
+    </section>
+
+
+</div>
+
+</body>
+</html>
