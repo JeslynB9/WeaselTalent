@@ -76,5 +76,3 @@ class Assessment(Base):
 
     time_limit_minutes = Column(Integer, nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
-
-

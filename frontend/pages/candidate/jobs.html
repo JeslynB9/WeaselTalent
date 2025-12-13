@@ -5,7 +5,7 @@
     <title>Job Matches</title>
 
     <link rel="stylesheet" href="../../css/components/navbar.css">
-    <link rel="stylesheet" href="../../css/pages/jobs.css">
+    <link rel="stylesheet" href="../../css/pages/candidate/jobs.css">
     <link rel="stylesheet" href="../../css/base/style.css">
 
 
@@ -37,7 +37,9 @@
     <div class="content-column">
 
         <div class="card">
-            <h3>Your Job Matches</h3>
+            <div class="card-header">
+                <h3>Your Job Matches</h3>
+            </div>
             <p class="muted">
                 Based on your skills and assessment results, here are roles that match your profile.
             </p>
@@ -118,7 +120,7 @@
 
                     <div class="actions">
                         <button class="primary">View Details</button>
-                        <button class="secondary">Schedule Interview</button>
+                        <button class="secondary" onclick="window.location.href='../../pages/candidate/interview-scheduler.html'">Schedule Interview</button>
                     </div>
                 </div>
 
@@ -152,7 +154,7 @@
 
                     <div class="actions">
                         <button class="primary">View Details</button>
-                        <button class="secondary">Schedule Interview</button>
+                        <button class="secondary" onclick="window.location.href='../../pages/candidate/interview-scheduler.html'">Schedule Interview</button>
                     </div>
                 </div>
 
@@ -162,6 +164,6 @@
 </div>
 
 <script src="../../js/components/profile-column.js"></script>
-<script src="../../js/pages/jobs.js"></script>
+<script src="../../js/pages/candidate/jobs.js"></script>
 </body>
 </html>
