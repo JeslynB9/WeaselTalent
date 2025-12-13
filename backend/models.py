@@ -8,12 +8,10 @@
     # TechnicalDomains: domain_id, name, description 
     # CandidateSkillLevels: candidate_id (aka user_id)
 
-### ASSESSMENTS + TASKS
+### ASSESSMENTS
     # Assessments: assessment_id, scaffold_id, generated_at, time_limit_minutes, is_active
     # AssessmentScaffolds: scaffold_id, domain_id, difficulty_level, description 
-    # Tasks: task_id, assessment_id, task_type, prompt
     # CandidateAssessments: candidate_assesment_id, candidate_id, assessment_id, total_score, completed_at
-    # CandidateTaskResults: candidate_assessment_id, task_id, score, answer
 
 ### COMPANIES + ROLES
     # Companies: company_id, name, description, created_at
@@ -108,6 +106,7 @@ class Assessment(Base):
     time_limit_minutes = Column(Integer, nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
 
+## Assessment scaffold whihc will be used to feed into AI to generate assessment 
 class AssessmentScaffold(Base):
     __tablename__ = "assessment_scaffolds"
     scaffold_id = Column(Integer, primary_key=True, index=True)
@@ -116,14 +115,7 @@ class AssessmentScaffold(Base):
     description = Column(String, nullable=True)
 
 
-class Task(Base):
-    __tablename__ = "tasks"
-    task_id = Column(Integer, primary_key=True, index=True)
-    assessment_id = Column(Integer, nullable=False)
-    task_type = Column(String, nullable=False)  
-    prompt = Column(String, nullable=False)
-    max_score = Column(Integer, nullable=False)
-
+## Matches candidate to assessment and score
 class CandidateAssessment(Base):
     __tablename__ = "candidate_assessments"
     candidate_assessment_id = Column(Integer, primary_key=True, index=True)
@@ -132,13 +124,7 @@ class CandidateAssessment(Base):
     total_score = Column(Integer, nullable=True)
     completed_at = Column(DateTime(timezone=True), nullable=True)
 
-class CandidateTaskResult(Base):
-    __tablename__ = "candidate_task_results"
-    candidate_assessment_id = Column(Integer, primary_key=True, index=True)
-    task_id = Column(Integer, primary_key=True, index=True)
-    score = Column(Integer, nullable=True)
-    answer = Column(String, nullable=True)
-
+### Company Table
 class Company(Base):
     __tablename__ = "companies"
     company_id = Column(Integer, primary_key=True, index=True)
@@ -150,12 +136,14 @@ class Company(Base):
         nullable=False,
     )
 
+## Recruiter working for company 
 class Recruiter(Base):
     __tablename__ = "recruiters"
     recruiter_id = Column(Integer, primary_key=True, index=True)
     company_id = Column(Integer, nullable=False)
     job_title = Column(String, nullable=False)
 
+## Jobs offered by company
 class JobRole(Base):
     __tablename__ = "job_roles"
     role_id = Column(Integer, primary_key=True, index=True)
@@ -163,12 +151,14 @@ class JobRole(Base):
     title = Column(String, nullable=False)
     description = Column(String, nullable=True) 
 
+## Job role requirements in terms of technical domains + skill levels
 class JobRoleRequirement(Base):
     __tablename__ = "job_role_requirements"
     role_id = Column(Integer, primary_key=True, index=True)
     domain_id = Column(Integer, primary_key=True, index=True)
     minimum_level = Column(Integer, nullable=False)
 
+## Match candidate to job with match score 
 class CandidateJobMatch(Base):
     __tablename__ = "candidate_job_matches"
     candidate_id = Column(Integer, primary_key=True, index=True)
@@ -180,6 +170,7 @@ class CandidateJobMatch(Base):
         nullable=False,
     )
 
+## Recruiter availability for interviews
 class RecruiterAvailability(Base):
     __tablename__ = "recruiter_availability"
     availability_id = Column(Integer, primary_key=True, index=True)
@@ -188,6 +179,8 @@ class RecruiterAvailability(Base):
     end_time = Column(DateTime(timezone=True), nullable=False)
     is_booked = Column(Boolean, default=False, nullable=False)
 
+
+## Interview scheduled between candidate and recruite
 class Interview(Base):
     __tablename__ = "interviews"
     interview_id = Column(Integer, primary_key=True, index=True)
@@ -197,6 +190,7 @@ class Interview(Base):
     scheduled_time = Column(DateTime(timezone=True), nullable=False)
     status = Column(ENUM('scheduled','completed','cancelled'), default='scheduled', nullable=False)
 
+## Notes by recruiter after interview
 class InterviewNote(Base):
     __tablename__ = "interview_notes"
     interview_id = Column(Integer, primary_key=True, index=True)
