@@ -1,0 +1,36 @@
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.notification-item {
+    background-color: #f0e7ff;
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.notification-item strong {
+    font-size: 1em;
+    color: #4a3f69;
+}
+
+.notification-item p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #333;
+}
+
+.notification-item .time {
+    font-size: 0.75em;
+    color: #777;
+}
+
+.notification-item button {
+    align-self: flex-start; /* aligns button to left or use flex-end for right */
+    margin-top: 8px;
+}
