@@ -1,17 +1,20 @@
+/* Assessment List layout */
 .assessment-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
+/* Assessment Card */
 .assessment {
+    position: relative;
     padding: 18px;
     border-radius: 14px;
     border: 1px solid #ddd;
     background: white;
-    position: relative;
 }
 
+/* States */
 .assessment.completed {
     background: #f0fff4;
     border-color: #a7f3d0;
@@ -27,6 +30,7 @@
     opacity: 0.7;
 }
 
+/* Levels */
 .level {
     display: inline-block;
     padding: 4px 10px;
@@ -40,6 +44,7 @@
 .level-3 { background: #ede9fe; }
 .level-4 { background: #fee2e2; }
 
+/* Status */
 .status {
     position: absolute;
     top: 18px;
@@ -47,6 +52,12 @@
     font-size: 13px;
 }
 
+.score {
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+/* Action buttons */
 .start {
     margin-top: 12px;
     background: #4f46ff;
@@ -55,28 +66,4 @@
     padding: 8px 16px;
     border-radius: 8px;
     cursor: pointer;
-}
-
-.score {
-    margin-top: 8px;
-    font-size: 13px;
-}
-
-.filters {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.filters select,
-.filters button {
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-family: inherit;
-    cursor: pointer;
-}
-
-#reset-filters {
-    background: #eee;
 }
