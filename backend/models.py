@@ -8,12 +8,10 @@
     # TechnicalDomains: domain_id, name, description 
     # CandidateSkillLevels: candidate_id (aka user_id)
 
-### ASSESSMENTS + TASKS
+### ASSESSMENTS
     # Assessments: assessment_id, scaffold_id, generated_at, time_limit_minutes, is_active
     # AssessmentScaffolds: scaffold_id, domain_id, difficulty_level, description 
-    # Tasks: task_id, assessment_id, task_type, prompt
     # CandidateAssessments: candidate_assesment_id, candidate_id, assessment_id, total_score, completed_at
-    # CandidateTaskResults: candidate_assessment_id, task_id, score, answer
 
 ### COMPANIES + ROLES
     # Companies: company_id, name, description, created_at
@@ -140,6 +138,7 @@ class CandidateSkillLevel(Base):
 # ASSESSMENTS + TASKS
 # =====================================================
 
+## Assessment scaffold whihc will be used to feed into AI to generate assessment 
 class AssessmentScaffold(Base):
     __tablename__ = "assessment_scaffolds"
 
@@ -164,18 +163,6 @@ class Assessment(Base):
     scaffold = relationship("AssessmentScaffold", back_populates="assessments")
     tasks = relationship("Task", back_populates="assessment")
 
-
-class Task(Base):
-    __tablename__ = "tasks"
-
-    task_id = Column(Integer, primary_key=True)
-    assessment_id = Column(Integer, ForeignKey("assessments.assessment_id"))
-    task_type = Column(String)  # coding / mcq / short_answer
-    prompt = Column(Text)
-
-    assessment = relationship("Assessment", back_populates="tasks")
-
-
 class CandidateAssessment(Base):
     __tablename__ = "candidate_assessments"
     __table_args__ = (
@@ -194,27 +181,6 @@ class CandidateAssessment(Base):
         cascade="all, delete-orphan",
     )
 
-
-class CandidateTaskResult(Base):
-    __tablename__ = "candidate_task_results"
-
-    id = Column(Integer, primary_key=True)
-    candidate_assessment_id = Column(
-        Integer, ForeignKey("candidate_assessments.candidate_assessment_id")
-    )
-    task_id = Column(Integer, ForeignKey("tasks.task_id"))
-    score = Column(Integer)
-    answer = Column(Text)
-
-    candidate_assessment = relationship(
-        "CandidateAssessment", back_populates="task_results"
-    )
-
-
-# =====================================================
-# COMPANIES + ROLES
-# =====================================================
-
 class Company(Base):
     __tablename__ = "companies"
 
@@ -227,6 +193,7 @@ class Company(Base):
     roles = relationship("JobRole", back_populates="company")
 
 
+## Recruiter working for company 
 class Recruiter(Base):
     __tablename__ = "recruiters"
 
@@ -238,6 +205,7 @@ class Recruiter(Base):
     company = relationship("Company", back_populates="recruiters")
 
 
+## Jobs offered by company
 class JobRole(Base):
     __tablename__ = "job_roles"
 
@@ -254,6 +222,7 @@ class JobRole(Base):
     )
 
 
+## Job role requirements in terms of technical domains + skill levels
 class JobRoleRequirement(Base):
     __tablename__ = "job_role_requirements"
     __table_args__ = (
@@ -273,6 +242,7 @@ class JobRoleRequirement(Base):
 # MATCHING SYSTEM
 # =====================================================
 
+## Match candidate to job with match score 
 class CandidateJobMatch(Base):
     __tablename__ = "candidate_job_matches"
     __table_args__ = (
@@ -300,6 +270,8 @@ class RecruiterAvailability(Base):
     is_booked = Column(Boolean, default=False)
 
 
+
+## Interview scheduled between candidate and recruite
 class Interview(Base):
     __tablename__ = "interviews"
 
@@ -311,6 +283,7 @@ class Interview(Base):
     status = Column(Enum(InterviewStatus))
 
 
+## Notes by recruiter after interview
 class InterviewNote(Base):
     __tablename__ = "interview_notes"
 
