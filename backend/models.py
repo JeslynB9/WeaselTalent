@@ -39,175 +39,274 @@ from sqlalchemy import (
     DateTime,
 )
 
-from datetime import datetime, timezone
-from db import Base
+from datetime import datetime
+import enum
 
-### Users table
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Text,
+    Enum,
+    UniqueConstraint,
+)
+from sqlalchemy.orm import declarative_base, relationship
+
+Base = declarative_base()
+
+# =====================================================
+# ENUMS
+# =====================================================
+
+class InterviewStatus(enum.Enum):
+    scheduled = "scheduled"
+    completed = "completed"
+    cancelled = "cancelled"
+
+
+class InterviewDecision(enum.Enum):
+    advance = "advance"
+    reject = "reject"
+    pending = "pending"
+
+
+# =====================================================
+# CORE AUTH + USER MANAGEMENT
+# =====================================================
+
 class User(Base):
     __tablename__ = "users"
 
-    user_id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, primary_key=True)
     email = Column(String, unique=True, nullable=False)
     password_hash = Column(String, nullable=False)
-    role = Column(String, nullable=False)
+    role = Column(String, nullable=False)  # candidate / recruiter / admin
+    created_at = Column(DateTime, default=datetime.utcnow)
+    last_login = Column(DateTime)
+    is_active = Column(Boolean, default=True)
 
-    created_at = Column (
-        DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
-        nullable=False,
-    )
+    profile = relationship("UserProfile", back_populates="user", uselist=False)
+    candidate_skills = relationship("CandidateSkillLevel", back_populates="candidate")
+    notifications = relationship("Notification", back_populates="user")
 
-    last_login = Column(DateTime(timezone=True), nullable=True)
-    is_active = Column(Boolean, default=True, nullable=False)
 
-## Users profile (personal info)
-class UserProfile(Base): 
+class UserProfile(Base):
     __tablename__ = "user_profiles"
-    user_id = Column(Integer, primary_key=True, index=True)  
-    full_name = Column(String, nullable=True)
-    date_of_birth = Column(DateTime, nullable=True)
-    profile_photo_url = Column(String, nullable=True)
-    is_anonymous = Column(Boolean, default=False, nullable=False)
 
-## Users saved preferences
-class UserPreferences(Base):
-    __tablename__ = "user_preferences" 
-    user_id = Column(Integer, primary_key=True, index=True)
-    preferred_technical_domains = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.user_id"), primary_key=True)
+    name = Column(String)
+    dob = Column(DateTime)
+    photo = Column(String)
+    is_anonymous = Column(Boolean, default=True)
 
-## Technical domains (e.g. web dev, backend, data science, etc) 
-class TechnicalDomains(Base): 
-    __tablename__ = "technical_domains" 
-    domain_id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    description = Column(String, nullable=True)
-
-## domains candidate is skilled in (they did assessment to skill up)
-class CandidateDomains(Base): 
-    __tablename__ = "candidate_domains"
-    candidate_id = Column(Integer, primary_key=True, index=True)
-    domain_id = Column(Integer, primary_key=True, index=True)
-    skill_level = Column(Integer, nullable=False)  
+    user = relationship("User", back_populates="profile")
 
 
-### Assessment table
-class Assessment(Base):
-    __tablename__ = "assessments"
+# =====================================================
+# CANDIDATE DOMAIN + SKILLS
+# =====================================================
 
-    assessment_id = Column(Integer, primary_key=True, index=True)
-    # scaffold that will be used to create the assessment
-    scaffold_id = Column(Integer, nullable=False)
-    generated_at = Column(
-        DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
-        nullable=False,
+class TechnicalDomain(Base):
+    __tablename__ = "technical_domains"
+
+    domain_id = Column(Integer, primary_key=True)
+    name = Column(String, unique=True, nullable=False)
+    description = Column(Text)
+
+    scaffolds = relationship("AssessmentScaffold", back_populates="domain")
+
+
+class CandidateSkillLevel(Base):
+    __tablename__ = "candidate_skill_levels"
+    __table_args__ = (
+        UniqueConstraint("candidate_id", "domain_id"),
     )
 
-    time_limit_minutes = Column(Integer, nullable=True)
-    is_active = Column(Boolean, default=True, nullable=False)
+    id = Column(Integer, primary_key=True)
+    candidate_id = Column(Integer, ForeignKey("users.user_id"))
+    domain_id = Column(Integer, ForeignKey("technical_domains.domain_id"))
+    level = Column(Integer)  # 1–5 or 0–100
+
+    candidate = relationship("User", back_populates="candidate_skills")
+    domain = relationship("TechnicalDomain")
+
+
+# =====================================================
+# ASSESSMENTS + TASKS
+# =====================================================
 
 ## Assessment scaffold whihc will be used to feed into AI to generate assessment 
 class AssessmentScaffold(Base):
     __tablename__ = "assessment_scaffolds"
-    scaffold_id = Column(Integer, primary_key=True, index=True)
-    domain_id = Column(Integer, nullable=False)
-    difficulty_level = Column(String, nullable=False)
-    description = Column(String, nullable=True)
+
+    scaffold_id = Column(Integer, primary_key=True)
+    domain_id = Column(Integer, ForeignKey("technical_domains.domain_id"))
+    difficulty_level = Column(Integer)
+    description = Column(Text)
+
+    domain = relationship("TechnicalDomain", back_populates="scaffolds")
+    assessments = relationship("Assessment", back_populates="scaffold")
 
 
-## Matches candidate to assessment and score
+class Assessment(Base):
+    __tablename__ = "assessments"
+
+    assessment_id = Column(Integer, primary_key=True)
+    scaffold_id = Column(Integer, ForeignKey("assessment_scaffolds.scaffold_id"))
+    generated_at = Column(DateTime, default=datetime.utcnow)
+    time_limit_minutes = Column(Integer)
+    is_active = Column(Boolean, default=True)
+
+    scaffold = relationship("AssessmentScaffold", back_populates="assessments")
+    tasks = relationship("Task", back_populates="assessment")
+
 class CandidateAssessment(Base):
     __tablename__ = "candidate_assessments"
-    candidate_assessment_id = Column(Integer, primary_key=True, index=True)
-    candidate_id = Column(Integer, nullable=False)
-    assessment_id = Column(Integer, nullable=False)
-    total_score = Column(Integer, nullable=True)
-    completed_at = Column(DateTime(timezone=True), nullable=True)
+    __table_args__ = (
+        UniqueConstraint("candidate_id", "assessment_id"),
+    )
 
-### Company Table
+    candidate_assessment_id = Column(Integer, primary_key=True)
+    candidate_id = Column(Integer, ForeignKey("users.user_id"))
+    assessment_id = Column(Integer, ForeignKey("assessments.assessment_id"))
+    total_score = Column(Integer)
+    completed_at = Column(DateTime)
+
+    task_results = relationship(
+        "CandidateTaskResult",
+        back_populates="candidate_assessment",
+        cascade="all, delete-orphan",
+    )
+
 class Company(Base):
     __tablename__ = "companies"
-    company_id = Column(Integer, primary_key=True, index=True)
+
+    company_id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    description = Column(String, nullable=True)
-    created_at = Column(
-        DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
-        nullable=False,
-    )
+    description = Column(Text)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    recruiters = relationship("Recruiter", back_populates="company")
+    roles = relationship("JobRole", back_populates="company")
+
 
 ## Recruiter working for company 
 class Recruiter(Base):
     __tablename__ = "recruiters"
-    recruiter_id = Column(Integer, primary_key=True, index=True)
-    company_id = Column(Integer, nullable=False)
-    job_title = Column(String, nullable=False)
+
+    recruiter_id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.user_id"))
+    company_id = Column(Integer, ForeignKey("companies.company_id"))
+    job_title = Column(String)
+
+    company = relationship("Company", back_populates="recruiters")
+
 
 ## Jobs offered by company
 class JobRole(Base):
     __tablename__ = "job_roles"
-    role_id = Column(Integer, primary_key=True, index=True)
-    company_id = Column(Integer, nullable=False)
-    title = Column(String, nullable=False)
-    description = Column(String, nullable=True) 
+
+    role_id = Column(Integer, primary_key=True)
+    company_id = Column(Integer, ForeignKey("companies.company_id"))
+    title = Column(String)
+    description = Column(Text)
+
+    company = relationship("Company", back_populates="roles")
+    requirements = relationship(
+        "JobRoleRequirement",
+        back_populates="role",
+        cascade="all, delete-orphan",
+    )
+
 
 ## Job role requirements in terms of technical domains + skill levels
 class JobRoleRequirement(Base):
     __tablename__ = "job_role_requirements"
-    role_id = Column(Integer, primary_key=True, index=True)
-    domain_id = Column(Integer, primary_key=True, index=True)
-    minimum_level = Column(Integer, nullable=False)
+    __table_args__ = (
+        UniqueConstraint("role_id", "domain_id"),
+    )
+
+    id = Column(Integer, primary_key=True)
+    role_id = Column(Integer, ForeignKey("job_roles.role_id"))
+    domain_id = Column(Integer, ForeignKey("technical_domains.domain_id"))
+    minimum_level = Column(Integer)
+
+    role = relationship("JobRole", back_populates="requirements")
+    domain = relationship("TechnicalDomain")
+
+
+# =====================================================
+# MATCHING SYSTEM
+# =====================================================
 
 ## Match candidate to job with match score 
 class CandidateJobMatch(Base):
     __tablename__ = "candidate_job_matches"
-    candidate_id = Column(Integer, primary_key=True, index=True)
-    role_id = Column(Integer, primary_key=True, index=True)
-    match_score = Column(Integer, nullable=False)
-    last_updated = Column(
-        DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
-        nullable=False,
+    __table_args__ = (
+        UniqueConstraint("candidate_id", "role_id"),
     )
 
-## Recruiter availability for interviews
+    id = Column(Integer, primary_key=True)
+    candidate_id = Column(Integer, ForeignKey("users.user_id"))
+    role_id = Column(Integer, ForeignKey("job_roles.role_id"))
+    match_score = Column(Integer)
+    last_updated = Column(DateTime, default=datetime.utcnow)
+
+
+# =====================================================
+# INTERVIEW PROCESS
+# =====================================================
+
 class RecruiterAvailability(Base):
     __tablename__ = "recruiter_availability"
-    availability_id = Column(Integer, primary_key=True, index=True)
-    recruiter_id = Column(Integer, nullable=False)
-    start_time = Column(DateTime(timezone=True), nullable=False)
-    end_time = Column(DateTime(timezone=True), nullable=False)
-    is_booked = Column(Boolean, default=False, nullable=False)
+
+    availability_id = Column(Integer, primary_key=True)
+    recruiter_id = Column(Integer, ForeignKey("recruiters.recruiter_id"))
+    start_time = Column(DateTime)
+    end_time = Column(DateTime)
+    is_booked = Column(Boolean, default=False)
+
 
 
 ## Interview scheduled between candidate and recruite
 class Interview(Base):
     __tablename__ = "interviews"
-    interview_id = Column(Integer, primary_key=True, index=True)
-    candidate_id = Column(Integer, nullable=False)
-    recruiter_id = Column(Integer, nullable=False)
-    role_id = Column(Integer, nullable=False)
-    scheduled_time = Column(DateTime(timezone=True), nullable=False)
-    status = Column(ENUM('scheduled','completed','cancelled'), default='scheduled', nullable=False)
+
+    interview_id = Column(Integer, primary_key=True)
+    candidate_id = Column(Integer, ForeignKey("users.user_id"))
+    recruiter_id = Column(Integer, ForeignKey("recruiters.recruiter_id"))
+    role_id = Column(Integer, ForeignKey("job_roles.role_id"))
+    scheduled_time = Column(DateTime)
+    status = Column(Enum(InterviewStatus))
+
 
 ## Notes by recruiter after interview
 class InterviewNote(Base):
     __tablename__ = "interview_notes"
-    interview_id = Column(Integer, primary_key=True, index=True)
-    recruiter_id = Column(Integer, nullable=False)
-    notes = Column(String, nullable=True)
-    fit_score = Column(Integer, nullable=True)
-    decision = Column(ENUM('advance','reject','pending'), default='pending', nullable=False)
+
+    id = Column(Integer, primary_key=True)
+    interview_id = Column(Integer, ForeignKey("interviews.interview_id"))
+    recruiter_id = Column(Integer, ForeignKey("recruiters.recruiter_id"))
+    notes = Column(Text)
+    fit_score = Column(Integer)
+    decision = Column(Enum(InterviewDecision))
+
+
+# =====================================================
+# NOTIFICATIONS
+# =====================================================
 
 class Notification(Base):
     __tablename__ = "notifications"
-    notification_id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, nullable=False)
-    type = Column(String, nullable=False)
-    message = Column(String, nullable=False)
-    is_read = Column(Boolean, default=False, nullable=False)
-    created_at = Column(
-        DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
-        nullable=False,
-    )
+
+    notification_id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.user_id"))
+    type = Column(String)
+    message = Column(Text)
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="notifications")
