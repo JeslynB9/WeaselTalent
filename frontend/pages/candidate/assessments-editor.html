@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assessments</title>
+
+    <link rel="stylesheet" href="../../css/components/navbar.css">
+    <link rel="stylesheet" href="../../css/base/style.css">
+    <link rel="stylesheet" href="../../css/pages/candidate/home.css">
+    <link rel="stylesheet" href="../../css/pages/candidate/assessments.css">
+    <link rel="stylesheet" href="../../css/pages/candidate/assessment-editor.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material.min.css">
+</head>
+<body>
+
+<nav>
+    <div class="left-nav">
+        <img src="../../assets/images/logo.png" alt="Logo">
+        <input type="text" placeholder="Search">
+    </div>
+    <div class="links">
+        <a href="../../pages/candidate/home.html">Home</a>
+        <a href="../../pages/candidate/jobs.html">Jobs</a>
+        <a href="../../pages/candidate/assessments.html">Assessments</a>
+        <a href="../../pages/candidate/interviews.html">Interviews</a>
+        <a href="../../pages/shared/notifications.html">Notifications</a>
+        <a href="../../pages/shared/profile.html">Me</a>
+    </div>
+</nav>
+
+<div class="container">
+    <!-- LEFT COLUMN -->
+    <div id="profile-column"></div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="content-column">
+        <div class="card">
+            <div class="card-header">
+                <h3>Object Oriented Python Course</h3>
+            </div>
+
+            <h4>Level 1 Assignment</h4>
+
+            <p>
+                In this section, you will be asked to write a simple program to evaluate your level 1 ability.
+            </p>
+
+            <ul>
+                <li>Create a class called <strong>Student</strong>.</li>
+                <li>The class must have the following attributes:
+                    <ul>
+                        <li><code>name</code> (string)</li>
+                        <li><code>student_id</code> (integer)</li>
+                    </ul>
+                </li>
+                <li>The class must include a method called <code>display_info()</code>.</li>
+                <li>The <code>display_info()</code> method should print the student’s name and ID.</li>
+                <li>Create two <strong>Student</strong> objects.</li>
+                <li>Call the <code>display_info()</code> method for each object.</li>
+            </ul>
+
+            <!-- CODE EDITOR -->
+            <div class="editor-container">
+                <h4>Your Code</h4>
+                <textarea id="code-editor"></textarea>
+
+                <div class="editor-actions">
+                    <button id="run-btn" disabled>Run Code</button>
+                    <button id="submit-btn" disabled>Submit</button>
+                </div>
+
+                <pre id="output">Loading Python environment...</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pyodide -->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+
+<!-- CodeMirror JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+
+<script>
+    // Initialize CodeMirror
+    const editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+        lineNumbers: true,
+        mode: "python",
+        theme: "material"
+    });
+
+    const runBtn = document.getElementById("run-btn");
+    const submitBtn = document.getElementById("submit-btn");
+    const output = document.getElementById("output");
+
+    let pyodideReady = false;
+    let pyodide;
+
+    // Load Pyodide on page load
+    async function loadPyodideAndSetup() {
+        output.textContent = "Loading Python environment...";
+        pyodide = await loadPyodide();
+
+        // Redirect print to JS
+        await pyodide.runPythonAsync(`
+import sys
+from js import console
+
+class OutputCatcher:
+    def __init__(self):
+        self.text = ""
+    def write(self, s):
+        self.text += s
+    def flush(self):
+        pass
+
+sys.stdout = OutputCatcher()
+sys.stderr = OutputCatcher()
+`);
+
+        pyodideReady = true;
+        runBtn.disabled = false;
+        submitBtn.disabled = false;
+        output.textContent = "Python environment ready!\n";
+    }
+
+    loadPyodideAndSetup();
+
+    // Run code
+    runBtn.addEventListener("click", async () => {
+        if (!pyodideReady) {
+            output.textContent = "Python environment still loading...";
+            return;
+        }
+
+        const code = editor.getValue();
+        output.textContent = ""; // clear previous output
+
+        try {
+            const result = await pyodide.runPythonAsync(code);
+            // Get captured print output
+            const printed = await pyodide.runPythonAsync("sys.stdout.text");
+            output.textContent = printed;
+
+            if (result !== undefined) output.textContent += "\n" + result;
+
+            // Reset stdout for next run
+            await pyodide.runPythonAsync("sys.stdout.text = ''");
+        } catch (err) {
+            output.textContent += err;
+        }
+    });
+
+    // Submit code
+    submitBtn.addEventListener("click", () => {
+        const code = editor.getValue();
+        console.log("Submitted code:", code);
+
+        // Show the modal
+        const modal = document.getElementById("submitModal");
+        modal.style.display = "block";
+
+        // Redirect when Go Back is clicked
+        const goBackBtn = document.getElementById("goBackBtn");
+        goBackBtn.onclick = () => {
+            window.location.href = "../../pages/candidate/assessments.html"; // change to your target page
+        };
+    });
+
+    // Optional: click outside modal to close
+    window.onclick = function(event) {
+        const modal = document.getElementById("submitModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+
+
+</script>
+
+<script src="../../js/components/profile-column.js"></script>
+<script src="../../js/pages/candidate/assessments.js"></script>
+
+<div id="submitModal" class="modal">
+    <div class="modal-content">
+        <h2>Submitted!</h2>
+        <button id="goBackBtn">Go Back</button>
+    </div>
+</div>
+
+</body>
+</html>

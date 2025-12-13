@@ -15,6 +15,34 @@ app = FastAPI(title="Lyrathon Assessments Backend", version="0.1.0") #FastAPI no
 add_cors_middleware(app)
 
 # ----------------------------
+# Pydantic Models (API schemas)
+# ----------------------------
+# Models define the structure of data sent and received via the API
+class AssessmentOut(BaseModel):
+    id: str
+    track: str
+    level: int
+    title: str
+    prompt: str
+    rubric: Dict[str, Any]
+
+# Models for submission input/output
+class SubmissionIn(BaseModel):
+    candidate_id: str
+    assessment_id: str
+    answer_text: str
+
+# Models for submission output
+class SubmissionOut(BaseModel):
+    id: int
+    candidate_id: str
+    assessment_id: str
+    answer_text: str
+    score: Optional[int]
+    feedback: Optional[str]
+    created_at: str
+
+# ----------------------------
 # Database helpers
 # ----------------------------
 def db() -> sqlite3.Connection:  #connecting to database
