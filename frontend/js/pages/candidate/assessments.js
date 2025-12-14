@@ -1,47 +1,66 @@
-document.addEventListener("DOMContentLoaded", () => {
+// assessments.js (ES module)
 
-    const levelFilter = document.getElementById("filter-level");
-    const domainFilter = document.getElementById("filter-domain");
-    const statusFilter = document.getElementById("filter-status");
-    const resetBtn = document.getElementById("reset-filters");
+import { API_BASE } from "../../api-config.js";
 
-    const assessments = document.querySelectorAll(".assessment");
+const CANDIDATE_ID = 1;
+const listEl = document.querySelector(".assessment-list");
 
-    // If filters don't exist on this page, exit safely
-    if (!levelFilter || !domainFilter || !statusFilter || !resetBtn) {
-        return;
+async function loadCourses() {
+  try {
+    const res = await fetch(
+      `${API_BASE}/courses?candidate_id=${CANDIDATE_ID}`
+    );
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
     }
 
-    function applyFilters() {
-        const level = levelFilter.value;
-        const domain = domainFilter.value;
-        const status = statusFilter.value;
+    const courses = await res.json();
+    listEl.innerHTML = "";
 
-        assessments.forEach(card => {
-            const cardLevel = card.dataset.level;
-            const cardDomain = card.dataset.domain;
-            const cardStatus = card.dataset.status;
+    courses.forEach(course => {
+      const card = document.createElement("div");
+      card.className = `assessment ${
+        course.is_completed ? "completed" : "available"
+      }`;
 
-            const levelMatch = level === "all" || cardLevel === level;
-            const domainMatch = domain === "all" || cardDomain === domain;
-            const statusMatch = status === "all" || cardStatus === status;
+      card.innerHTML = `
+        <div class="assessment-header">
+          <span class="level level-${course.difficulty_level}">
+            Level ${course.difficulty_level}
+          </span>
+          ${
+            course.is_completed
+              ? `<span class="status completed">✔ Completed</span>`
+              : ""
+          }
+        </div>
 
-            card.style.display =
-                levelMatch && domainMatch && statusMatch
-                    ? "block"
-                    : "none";
-        });
-    }
+        <h4>${course.description}</h4>
+        <p>⏱ ${course.time_limit_minutes} minutes</p>
 
-    levelFilter.addEventListener("change", applyFilters);
-    domainFilter.addEventListener("change", applyFilters);
-    statusFilter.addEventListener("change", applyFilters);
+        ${
+          course.is_completed
+            ? `<p class="score">🏆 Score: ${course.score}%</p>`
+            : `<button class="start">Start</button>`
+        }
+      `;
 
-    resetBtn.addEventListener("click", () => {
-        levelFilter.value = "all";
-        domainFilter.value = "all";
-        statusFilter.value = "all";
-        applyFilters();
+      if (!course.is_completed) {
+        card.querySelector(".start").onclick = () => {
+          window.location.href =
+            `assessment-detail.html?course_id=${course.course_id}`;
+        };
+      }
+
+      listEl.appendChild(card);
     });
 
-});
+  } catch (err) {
+    console.error("Failed to load courses:", err);
+    listEl.innerHTML =
+      "<p class='error'>Could not load courses.</p>";
+  }
+}
+
+loadCourses();

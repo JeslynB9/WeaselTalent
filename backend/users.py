@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List
 from datetime import datetime
-from backend.db import SessionLocal
-from backend.models import User
+from db import SessionLocal
+from models import User
 
 def get_db():
     db = SessionLocal()

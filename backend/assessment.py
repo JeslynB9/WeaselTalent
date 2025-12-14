@@ -1,352 +1,264 @@
-from __future__ import annotations
-import json
-import sqlite3
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
-from cors_config import add_cors_middleware
-from auth import router as auth_router
-from models import Base
-from db import engine
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.orm import Session
+from typing import List
+from datetime import datetime
 
+from db import SessionLocal
+from models import (
+    Course,
+    Level,
+    Task,
+    Assessment,
+    CandidateAssessment,
+    CandidateTaskProgress,
+)
 
-DB_PATH = "assessments.db" #SQLite database file
-app = FastAPI(title="Lyrathon Assessments Backend", version="0.1.0") #FastAPI now listens for HTTP requests
+from pydantic import BaseModel
 
-add_cors_middleware(app)
-app.include_router(auth_router)
+# -----------------------------
+# DB dependency
+# -----------------------------
 
-# Create all tables
-Base.metadata.create_all(bind=engine)
-
-# ----------------------------
-# Pydantic Models (API schemas)
-# ----------------------------
-# Models define the structure of data sent and received via the API
-class AssessmentOut(BaseModel):
-    id: str
-    track: str
-    level: int
-    title: str
-    prompt: str
-    rubric: Dict[str, Any]
-
-# Models for submission input/output
-class SubmissionIn(BaseModel):
-    candidate_id: str
-    assessment_id: str
-    answer_text: str
-
-# Models for submission output
-class SubmissionOut(BaseModel):
-    id: int
-    candidate_id: str
-    assessment_id: str
-    answer_text: str
-    score: Optional[int]
-    feedback: Optional[str]
-    created_at: str
-
-# ----------------------------
-# Database helpers
-# ----------------------------
-def db() -> sqlite3.Connection:  #connecting to database
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-def init_db() -> None: # creating tables
-    conn = db()
-    cur = conn.cursor()
-
-    cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS assessments (
-            id TEXT PRIMARY KEY,
-            track TEXT NOT NULL,
-            level INTEGER NOT NULL,
-            title TEXT NOT NULL,
-            prompt TEXT NOT NULL,
-            rubric_json TEXT NOT NULL
-        )
-        """
-    )
-
-    cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS submissions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            candidate_id TEXT NOT NULL,
-            assessment_id TEXT NOT NULL,
-            answer_text TEXT NOT NULL,
-            score INTEGER,
-            feedback TEXT,
-            created_at TEXT NOT NULL,
-            UNIQUE(candidate_id, assessment_id),
-            FOREIGN KEY(assessment_id) REFERENCES assessments(id)
-        )
-        """
-    )
-
-    conn.commit()
-    conn.close()
-
-def seed_assessments() -> None: # sample assessments so frontend has data immediately
-    """Seed a few assessments if none exist."""
-    conn = db()
-    cur = conn.cursor()
-
-    count = cur.execute("SELECT COUNT(*) AS c FROM assessments").fetchone()["c"]# assessments already exist, don’t add again
-    if count > 0:
-        conn.close()
-        return
-
-    seeds = [
-        (
-            "py-l1",
-            "Python",
-            1,
-            "Python Basics: Clean Input",
-            "Write a short explanation of how you would validate user input for a Python CLI tool. Mention edge cases.",
-            json.dumps(
-                {
-                    "criteria": [
-                        {"name": "clarity", "weight": 0.25},
-                        {"name": "edge_cases", "weight": 0.35},
-                        {"name": "practicality", "weight": 0.40},
-                    ]
-                }
-            ),
-        ),
-        (
-            "py-l2",
-            "Python",
-            2,
-            "Python Data: Simple Analysis",
-            "Explain how you would compute average, median, and detect outliers in a list of numbers. Provide pseudocode.",
-            json.dumps(
-                {
-                    "criteria": [
-                        {"name": "correctness", "weight": 0.45},
-                        {"name": "structure", "weight": 0.25},
-                        {"name": "outliers", "weight": 0.30},
-                    ]
-                }
-            ),
-        ),
-        (
-            "cpp-l1",
-            "Backend C++",
-            1,
-            "C++ Memory Safety",
-            "Explain two common memory safety bugs in C++ and how you would prevent them in production code.",
-            json.dumps(
-                {
-                    "criteria": [
-                        {"name": "understanding", "weight": 0.50},
-                        {"name": "prevention", "weight": 0.50},
-                    ]
-                }
-            ),
-        ),
-    ]
-
-    cur.executemany(
-        "INSERT INTO assessments (id, track, level, title, prompt, rubric_json) VALUES (?, ?, ?, ?, ?, ?)",
-        seeds,
-    )
-    conn.commit()
-    conn.close()
-
-
-
-
-# ----------------------------
-# Scoring (simple + explainable)
-# ----------------------------
-def simple_score(assessment_track: str, answer_text: str) -> tuple[int, str]: # scoring algorithm
-    """
-    Hackathon-friendly scoring:
-    - length + keyword coverage
-    - produces score 0–100 and short feedback
-    Replace this later with AI/rubric scoring if you want.
-    """
-    text = answer_text.lower().strip()
-    length = len(text)
-
-    # Base from length (cap) - capped at 50 
-    base = min(50, int(length / 12))  # ~600 chars => 50
-
-    # Track-specific keywords
-    keywords = {
-        "python": ["validate", "edge", "exception", "type", "test", "input"],
-        "backend c++": ["pointer", "memory", "leak", "raii", "smart", "buffer", "overflow"],
-    }
-    track_key = assessment_track.lower()
-    pool = keywords.get(track_key, ["explain", "example", "tradeoff"])
-
-    hits = sum(1 for k in pool if k in text)
-    kw_score = min(40, hits * 8)  # max 40
-
-    # Bonus for structure - dont know if i should include this
-    bonus = 0
-    if "\n" in answer_text:
-        bonus += 5
-    if any(bullet in answer_text for bullet in ["- ", "* ", "1)", "2)"]):
-        bonus += 5
-
-    score = max(0, min(100, base + kw_score + bonus)) # final score should be between 0 to 100)
-
-    feedback_parts = []
-    if score < 50:
-        feedback_parts.append("Add more detail and include concrete edge cases/examples.")
-    if hits == 0:
-        feedback_parts.append("Try using more role-specific terminology to show depth.")
-    if bonus == 0:
-        feedback_parts.append("Use bullet points or short sections for readability.")
-    if not feedback_parts:
-        feedback_parts.append("Strong response. Clear, structured, and role-relevant.")
-
-    return score, " ".join(feedback_parts)
-
-
-# ----------------------------
-# Startup
-# ----------------------------
-@app.on_event("startup")
-def startup() -> None: # runs once when server starts
-    init_db()
-    seed_assessments() # ensures database and assessments exists
-
-
-# ----------------------------
-# Routes
-# ----------------------------
-@app.get("/assessments", response_model=List[AssessmentOut]) # Frontend calls this to list assessments
-def list_assessments(track: Optional[str] = None) -> List[AssessmentOut]:
-    conn = db()
-    cur = conn.cursor()
-
-    if track:
-        rows = cur.execute(
-            "SELECT * FROM assessments WHERE track = ? ORDER BY level ASC",
-            (track,),
-        ).fetchall()
-    else:
-        rows = cur.execute(
-            "SELECT * FROM assessments ORDER BY track ASC, level ASC"
-        ).fetchall()
-
-    conn.close()
-
-    out: List[AssessmentOut] = []
-    for r in rows:
-        out.append(
-            AssessmentOut(
-                id=r["id"],
-                track=r["track"],
-                level=r["level"],
-                title=r["title"],
-                prompt=r["prompt"],
-                rubric=json.loads(r["rubric_json"]),
-            )
-        )
-    return out
-
-
-@app.get("/assessments/{assessment_id}", response_model=AssessmentOut)
-def get_assessment(assessment_id: str) -> AssessmentOut:
-    conn = db()
-    cur = conn.cursor()
-    r = cur.execute("SELECT * FROM assessments WHERE id = ?", (assessment_id,)).fetchone()
-    conn.close()
-
-    if not r:
-        raise HTTPException(status_code=404, detail=f"Assessment '{assessment_id}' not found.")
-
-    return AssessmentOut(
-        id=r["id"],
-        track=r["track"],
-        level=r["level"],
-        title=r["title"],
-        prompt=r["prompt"],
-        rubric=json.loads(r["rubric_json"]),
-    )
-
-
-@app.post("/submissions", response_model=SubmissionOut)
-def submit_assessment(payload: SubmissionIn) -> SubmissionOut:
-    # Validate assessment exists
-    conn = db()
-    cur = conn.cursor()
-    a = cur.execute("SELECT * FROM assessments WHERE id = ?", (payload.assessment_id,)).fetchone()
-    if not a:
-        conn.close()
-        raise HTTPException(status_code=404, detail=f"Assessment '{payload.assessment_id}' not found.")
-
-    # Score it
-    score, feedback = simple_score(a["track"], payload.answer_text)
-    now = datetime.now(timezone.utc).isoformat()
-
+def get_db():
+    db = SessionLocal()
     try:
-        cur.execute(
-            """
-            INSERT INTO submissions (candidate_id, assessment_id, answer_text, score, feedback, created_at)
-            VALUES (?, ?, ?, ?, ?, ?)
-            """,
-            (payload.candidate_id, payload.assessment_id, payload.answer_text, score, feedback, now),
-        )
-        conn.commit()
-    except sqlite3.IntegrityError:
-        conn.close()
-        raise HTTPException(
-            status_code=409,
-            detail="You already submitted this assessment. (candidate_id + assessment_id must be unique)",
+        yield db
+    finally:
+        db.close()
+
+# -----------------------------
+# Response Schemas
+# -----------------------------
+
+class TaskOut(BaseModel):
+    task_id: int
+    type: str
+    title: str
+    content: str
+    order: int
+    completed: bool
+    unlocked: bool
+
+
+class LevelOut(BaseModel):
+    level_id: int
+    name: str
+    order: int
+    tasks: List[TaskOut]
+
+
+class AssessmentDetailOut(BaseModel):
+    assessment_id: int
+    time_limit_minutes: int
+    levels: List[LevelOut]
+
+
+class CourseListOut(BaseModel):
+    course_id: int
+    description: str
+    difficulty_level: int
+    time_limit_minutes: int
+    is_completed: bool
+    score: int | None
+
+
+class TaskCompleteIn(BaseModel):
+    candidate_id: int
+    task_id: int
+
+# -----------------------------
+# Router
+# -----------------------------
+
+router = APIRouter(
+    prefix="/courses",
+    tags=["courses"]
+)
+
+# -----------------------------
+# Helper logic
+# -----------------------------
+
+def compute_task_unlocked(task, level_tasks, completed_task_ids, level_unlocked):
+    if not level_unlocked:
+        return False
+
+    if task.order == 1:
+        return True
+
+    previous_tasks = [t for t in level_tasks if t.order < task.order]
+
+    if task.type == "content":
+        prev_task = max(previous_tasks, key=lambda t: t.order)
+        return prev_task.task_id in completed_task_ids
+
+    if task.type == "assessment":
+        required_lessons = [
+            t.task_id for t in previous_tasks if t.type == "content"
+        ]
+        return all(tid in completed_task_ids for tid in required_lessons)
+
+    return False
+
+# -----------------------------
+# Routes
+# -----------------------------
+
+@router.get("/", response_model=List[CourseListOut])
+def list_courses(candidate_id: int = Query(...), db: Session = Depends(get_db)):
+    courses = db.query(Course).all()
+    result = []
+
+    completed_assessments = {
+        ca.assessment_id: ca
+        for ca in db.query(CandidateAssessment)
+        .filter(CandidateAssessment.candidate_id == candidate_id)
+        .all()
+    }
+
+    for course in courses:
+        assessment = (
+            db.query(Assessment)
+            .filter(Assessment.course_id == course.course_id)
+            .first()
         )
 
-    sub_id = cur.lastrowid
-    conn.close()
+        completed = False
+        score = None
 
-    return SubmissionOut(
-        id=sub_id,
-        candidate_id=payload.candidate_id,
-        assessment_id=payload.assessment_id,
-        answer_text=payload.answer_text,
-        score=score,
-        feedback=feedback,
-        created_at=now,
+        if assessment and assessment.assessment_id in completed_assessments:
+            completed = True
+            score = completed_assessments[assessment.assessment_id].total_score
+
+        result.append(CourseListOut(
+            course_id=course.course_id,
+            description=course.description,
+            difficulty_level=course.difficulty_level,
+            time_limit_minutes=assessment.time_limit_minutes if assessment else 60,
+            is_completed=completed,
+            score=score
+        ))
+
+    return result
+
+
+@router.get("/{course_id}", response_model=AssessmentDetailOut)
+def get_course_detail(
+    course_id: int,
+    candidate_id: int = Query(...),
+    db: Session = Depends(get_db)
+):
+    course = db.query(Course).filter(Course.course_id == course_id).first()
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    completed_task_ids = {
+        p.task_id
+        for p in db.query(CandidateTaskProgress)
+        .filter(CandidateTaskProgress.candidate_id == candidate_id)
+        .all()
+    }
+
+    completed_assessment_levels = set()
+    completed_assessments = (
+        db.query(CandidateAssessment)
+        .filter(CandidateAssessment.candidate_id == candidate_id)
+        .all()
+    )
+
+    for ca in completed_assessments:
+        task = db.query(Task).filter(Task.task_id == ca.assessment_id).first()
+        if task:
+            completed_assessment_levels.add(task.level_id)
+
+    levels_out = []
+    sorted_levels = sorted(course.levels, key=lambda l: l.order)
+
+    for idx, level in enumerate(sorted_levels):
+        if level.order == 1:
+            level_unlocked = True
+        else:
+            prev_level = sorted_levels[idx - 1]
+            level_unlocked = prev_level.level_id in completed_assessment_levels
+
+        tasks_out = []
+        sorted_tasks = sorted(level.tasks, key=lambda t: t.order)
+
+        for task in sorted_tasks:
+            unlocked = compute_task_unlocked(
+                task,
+                sorted_tasks,
+                completed_task_ids,
+                level_unlocked
+            )
+
+            tasks_out.append(TaskOut(
+                task_id=task.task_id,
+                type=task.type,
+                title=task.title,
+                content=task.content,
+                order=task.order,
+                completed=task.task_id in completed_task_ids,
+                unlocked=unlocked
+            ))
+
+        levels_out.append(LevelOut(
+            level_id=level.level_id,
+            name=level.name,
+            order=level.order,
+            tasks=tasks_out
+        ))
+
+    assessment = (
+        db.query(Assessment)
+        .filter(Assessment.course_id == course.course_id)
+        .first()
+    )
+
+    return AssessmentDetailOut(
+        assessment_id=assessment.assessment_id if assessment else course.course_id,
+        time_limit_minutes=assessment.time_limit_minutes if assessment else 60,
+        levels=levels_out
     )
 
 
-@app.get("/candidates/{candidate_id}/submissions", response_model=List[SubmissionOut]) # Allows:, candidate dashboard & recruiter review
-def list_candidate_submissions(candidate_id: str) -> List[SubmissionOut]:
-    conn = db()
-    cur = conn.cursor()
-    rows = cur.execute(
-        "SELECT * FROM submissions WHERE candidate_id = ? ORDER BY created_at DESC",
-        (candidate_id,),
-    ).fetchall()
-    conn.close()
+@router.post("/tasks/complete")
+def complete_task(data: TaskCompleteIn, db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.task_id == data.task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
 
-    return [
-        SubmissionOut(
-            id=r["id"],
-            candidate_id=r["candidate_id"],
-            assessment_id=r["assessment_id"],
-            answer_text=r["answer_text"],
-            score=r["score"],
-            feedback=r["feedback"],
-            created_at=r["created_at"],
-        )
-        for r in rows
-    ]
+    if task.type != "content":
+        raise HTTPException(status_code=400, detail="Only content tasks allowed")
 
+    existing = db.query(CandidateTaskProgress).filter(
+        CandidateTaskProgress.candidate_id == data.candidate_id,
+        CandidateTaskProgress.task_id == data.task_id
+    ).first()
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
+    if existing:
+        return {"status": "already_completed"}
 
+    progress = CandidateTaskProgress(
+        candidate_id=data.candidate_id,
+        task_id=data.task_id,
+        completed_at=datetime.utcnow()
+    )
 
+    db.add(progress)
+    db.commit()
 
+    return {"status": "completed"}
+
+@router.get("/tasks/{task_id}")
+def get_task(task_id: int, db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.task_id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    return {
+        "task_id": task.task_id,
+        "title": task.title,
+        "content": task.content,
+        "type": task.type
+    }
