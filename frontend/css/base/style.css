@@ -244,3 +244,15 @@ button {
     font-size: 0.9em;
     color: #333;
 }
+
+/* =========================================================
+   ERRORS AND OTHER
+   ========================================================= */
+.error {
+  margin-top: 10px;
+  color: #dc2626;
+  font-size: 14px;
+}
+.hidden {
+  display: none;
+}

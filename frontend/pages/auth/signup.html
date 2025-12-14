@@ -26,25 +26,30 @@
             <div class="logo">
                 <img src="../../assets/images/logo.png" alt="Logo" width="200" height="200">
             </div>
-            <input type="text" placeholder="First Name">
-            <input type="text" placeholder="Last Name">
-            <select name="role" required>
+            <input type="text" placeholder="First Name" id="firstName">
+            <input type="text" placeholder="Last Name" id="lastName">
+            <select id="role" name="role" required>
               <option value="" disabled selected>Select Role</option>
               <option value="candidate">Candidate</option>
               <option value="recruiter">Recruiter</option>
             </select>
-            <input type="text" placeholder="Email">
-            <input type="password" placeholder="Password">
+            <input type="text" placeholder="Email" id="email">
+            <input type="password" placeholder="Password" id="password">
 
-            <button>Sign Up</button>
+            <div id="error" style="color: red; margin-top: 10px;"></div>
+
+            <button id="signupBtn">Sign Up</button>
 
             <div class="signup">
-                Have an account? <a href="index.html">Login</a>
+                Have an account? <a href="login.html">Login</a>
             </div>
         </div>
     </div>
 
 </body>
+
+<!-- <script src="../../js/api-config.js"></script> -->
+<script type="module" src="../../js/pages/auth/signup.js"></script>
 </html>
 
 

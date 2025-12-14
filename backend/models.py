@@ -161,25 +161,17 @@ class Assessment(Base):
     is_active = Column(Boolean, default=True)
 
     scaffold = relationship("AssessmentScaffold", back_populates="assessments")
-    tasks = relationship("Task", back_populates="assessment")
 
 class CandidateAssessment(Base):
     __tablename__ = "candidate_assessments"
     __table_args__ = (
         UniqueConstraint("candidate_id", "assessment_id"),
     )
-
     candidate_assessment_id = Column(Integer, primary_key=True)
     candidate_id = Column(Integer, ForeignKey("users.user_id"))
     assessment_id = Column(Integer, ForeignKey("assessments.assessment_id"))
     total_score = Column(Integer)
     completed_at = Column(DateTime)
-
-    task_results = relationship(
-        "CandidateTaskResult",
-        back_populates="candidate_assessment",
-        cascade="all, delete-orphan",
-    )
 
 class Company(Base):
     __tablename__ = "companies"
@@ -310,3 +302,4 @@ class Notification(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="notifications")
+

@@ -1,3 +1,58 @@
+async function fetchPipeline(roleId = null) {
+  let url = `${API_BASE}/recruiters/${RECRUITER_ID}/pipeline`;
+  if (roleId) url += `?role_id=${roleId}`;
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to load pipeline");
+
+  return await res.json();
+}
+
+async function renderList() {
+  const items = await fetchPipeline();
+
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  items.forEach(c => {
+    list.innerHTML += `
+      <div class="cand">
+        <div>${c.display_name}</div>
+        <div>${c.role_title}</div>
+        <div>${Math.round(c.match_score)}%</div>
+        <div>
+          <button onclick="openCandidate(${c.candidate_id})">Review</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+async function openCandidate(candidateId) {
+  const res = await fetch(
+    `${API_BASE}/recruiters/${RECRUITER_ID}/candidates/${candidateId}`
+  );
+  const data = await res.json();
+
+  document.getElementById("drawer").classList.remove("hidden");
+
+  document.getElementById("drawer").innerHTML = `
+    <h3>${data.isAnonymous ? "Anonymous Candidate" : data.name}</h3>
+  `;
+}
+
+async function addAvailability(start, end) {
+  await fetch(`${API_BASE}/recruiters/${RECRUITER_ID}/availability`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      start_time: start,
+      end_time: end
+    })
+  });
+}
+
+
 // ---------------------------
 // API Integration
 // ---------------------------
