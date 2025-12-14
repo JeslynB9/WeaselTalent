@@ -1,44 +1,3 @@
-# define tables
-
-### CORE AUTH + USER MANAGEMENT
-    # User: user_id, email, password_hash, role, created_at, last_login, is_active
-    # UserProfile: user_id, name, dob, photo, is_anonymous
-
-### CANDIDATE DOMAIN + SKILLS 
-    # TechnicalDomains: domain_id, name, description 
-    # CandidateSkillLevels: candidate_id (aka user_id)
-
-### ASSESSMENTS
-    # Assessments: assessment_id, scaffold_id, generated_at, time_limit_minutes, is_active
-    # AssessmentScaffolds: scaffold_id, domain_id, difficulty_level, description 
-    # CandidateAssessments: candidate_assesment_id, candidate_id, assessment_id, total_score, completed_at
-
-### COMPANIES + ROLES
-    # Companies: company_id, name, description, created_at
-    # Recruiters: recruiter_id, company_id, job_title
-    # JobRoles: role_id, company_id, title, description
-    # JobRoleRequirements: role_id, domain_id, minimum_level
-
-### MATCHING SYSTEM
-    # CandidateJobMatches: candidate_id, role_id, match_score, last_updated                # to be recomputed when candidate finishes assessment, job requirements change 
-
-### INTERVIEW PROCESS
-    # RecruiterAvailability: availability_id, recruiter_id, start_time, end_time, is_booked
-    # Interviews: interview_id, candidate_id, recruiter_id, role_id, scheduled_time, status ENUM('scheduled','completed','cancelled')
-    # InterviewNotes: interview_id, recruiter_id, notes, fit_score, decision ENUM('advance','reject','pending')
-
-### NOTIFICATIONS
-    # Notifications: notification_id, user_id, type, message, is_read, created_at 
-
-from sqlalchemy import Enum
-from sqlalchemy import (
-    Column, 
-    Integer,
-    String, 
-    Boolean, 
-    DateTime,
-)
-
 from datetime import datetime
 import enum
 
@@ -103,7 +62,8 @@ class TechnicalDomain(Base):
     name = Column(String, unique=True, nullable=False)
     description = Column(Text)
 
-    scaffolds = relationship("AssessmentScaffold", back_populates="domain")
+    courses = relationship("Course", back_populates="domain")
+    courses = relationship("Course", back_populates="domain")
 
 
 class CandidateSkillLevel(Base):
@@ -125,30 +85,32 @@ class CandidateSkillLevel(Base):
 # ASSESSMENTS + TASKS
 # =====================================================
 
-## Assessment scaffold whihc will be used to feed into AI to generate assessment 
-class AssessmentScaffold(Base):
-    __tablename__ = "assessment_scaffolds"
+## Course scaffold which will be used to feed into AI to generate course 
+class Course(Base):
+    __tablename__ = "courses"
 
-    scaffold_id = Column(Integer, primary_key=True)
+    course_id = Column(Integer, primary_key=True)
     domain_id = Column(Integer, ForeignKey("technical_domains.domain_id"))
     difficulty_level = Column(Integer)
     description = Column(Text)
 
-    domain = relationship("TechnicalDomain", back_populates="scaffolds")
-    assessments = relationship("Assessment", back_populates="scaffold")
+    domain = relationship("TechnicalDomain", back_populates="courses")
+    assessments = relationship("Assessment", back_populates="course")
+    levels = relationship("Level", back_populates="course")
+    is_active = Column(Boolean, default=True)
 
 
 class Assessment(Base):
     __tablename__ = "assessments"
 
     assessment_id = Column(Integer, primary_key=True)
-    scaffold_id = Column(Integer, ForeignKey("assessment_scaffolds.scaffold_id"))
+    course_id = Column(Integer, ForeignKey("courses.course_id"))
     generated_at = Column(DateTime, default=datetime.utcnow)
     time_limit_minutes = Column(Integer)
     is_active = Column(Boolean, default=True)
 
-    scaffold = relationship("AssessmentScaffold", back_populates="assessments")
-    # tasks = relationship("Task", back_populates="assessment")
+    course = relationship("Course", back_populates="assessments")
+
 
 class CandidateAssessment(Base):
     __tablename__ = "candidate_assessments"
@@ -162,11 +124,42 @@ class CandidateAssessment(Base):
     total_score = Column(Integer)
     completed_at = Column(DateTime)
 
-    # task_results = relationship(
-    #     "CandidateTaskResult",
-    #     back_populates="candidate_assessment",
-    #     cascade="all, delete-orphan",
-    # )
+
+class CandidateTaskProgress(Base):
+    __tablename__ = "candidate_task_progress"
+    __table_args__ = (
+        UniqueConstraint("candidate_id", "task_id"),
+    )
+
+    id = Column(Integer, primary_key=True)
+    candidate_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
+    task_id = Column(Integer, ForeignKey("tasks.task_id"), nullable=False)
+    completed_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Level(Base):
+    __tablename__ = "levels"
+
+    level_id = Column(Integer, primary_key=True)
+    course_id = Column(Integer, ForeignKey("courses.course_id"))
+    name = Column(String)
+    order = Column(Integer)
+
+    course = relationship("Course", back_populates="levels")
+    tasks = relationship("Task", back_populates="level")
+
+
+class Task(Base):
+    __tablename__ = "tasks"
+
+    task_id = Column(Integer, primary_key=True)
+    level_id = Column(Integer, ForeignKey("levels.level_id"))
+    type = Column(String)  # 'content' or 'assessment'
+    title = Column(String)
+    content = Column(Text)
+    order = Column(Integer)
+
+    level = relationship("Level", back_populates="tasks")
 
 class Company(Base):
     __tablename__ = "companies"

@@ -27,13 +27,13 @@
     </div>
 </nav>
 
-<div class="container">
+<div class="container full-width">
 
-    <!-- LEFT COLUMN (REUSED) -->
-    <div id="profile-column"></div>
+    <!-- LEFT COLUMN (REUSED)
+    <div id="profile-column"></div> -->
 
     <!-- RIGHT COLUMN -->
-    <div class="content-column">
+    <!-- <div class="content-column"> -->
 
         <div class="card">
             <div class="card-header">
@@ -67,88 +67,17 @@
                 <option value="locked">Locked</option>
             </select>
 
-            <button id="reset-filters">Reset</button>
+            <button id="reset-filter-btn">Reset</button>
 
         </div>
-
             <div class="assessment-list">
-
-                <!-- Completed -->
-                <div class="assessment completed"
-                    data-level="1"
-                    data-domain="backend"
-                    data-status="completed">
-
-                    <span class="level level-1">Level 1</span>
-                    <h4>REST API Fundamentals</h4>
-                    <p>Build a simple REST API with CRUD operations</p>
-                    <span class="status completed">✔ Completed</span>
-                    <p class="score">🏆 Score: 92%</p>
-                </div>
-
-                <div class="assessment completed">
-                    <span class="level level-2">Level 2</span>
-                    <h4>Database Design & Optimisation</h4>
-                    <p>Design and optimise a relational database schema</p>
-                    <span class="status completed">✔ Completed</span>
-                    <p class="score">🏆 Score: 88%</p>
-                </div>
-
-                <!-- Available -->
-                <div class="assessment available"
-                    data-level="3"
-                    data-domain="backend"
-                    data-status="available">
-
-                    <span class="level level-3">Level 3</span>
-                    <h4>Microservices Architecture</h4>
-                    <p>Design a scalable microservices system</p>
-                    <button class="start">Start</button>
-                </div>
-
-                <!-- Locked -->
-                <div class="assessment locked"
-                    data-level="4"
-                    data-domain="backend"
-                    data-status="locked">
-
-                    <span class="level level-4">Level 4</span>
-                    <h4>Advanced System Design</h4>
-                    <p>Design a high-throughput distributed system</p>
-                    <span class="status locked">🔒 Locked</span>
-                </div>
-
-                <!-- Python -->
-                <div class="assessment completed"
-                    data-level="1"
-                    data-domain="backend"
-                    data-status="completed">
-
-                    <span class="level level-1">Level 1</span>
-                    <h4>Python Basics & Data Structures</h4>
-                    <p>Solve problems using Python fundamentals</p>
-                    <span class="status completed">✔ Completed</span>
-                    <p class="score">🏆 Score: 95%</p>
-                </div>
-
-                <div class="assessment available"
-                    data-level="2"
-                    data-domain="backend"
-                    data-status="available">
-
-                    <span class="level level-2">Level 2</span>
-                    <h4>Object-Oriented Python</h4>
-                    <p>Build a class-based application</p>
-                    <button class="start" onclick="window.location.href='../../pages/candidate/assessments-editor.html'">Start</button>
-                </div>
-
+                <!-- Assessment cards will be dynamically inserted here -->
             </div>
         </div>
-    </div>
+    <!-- </div> -->
 </div>
 
-<script src="../../js/api-config.js"></script>
 <script src="../../js/components/profile-column.js"></script>
-<script src="../../js/pages/candidate/assessments.js"></script>
+<script type="module" src="../../js/pages/candidate/assessments.js"></script>
 </body>
 </html>

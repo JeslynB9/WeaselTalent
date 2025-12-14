@@ -9,19 +9,30 @@
 
 .level-row {
     display: grid;
-    grid-template-columns: 100px 1fr 150px;
+    grid-template-columns: 300px 1fr 150px;
     align-items: center;
     margin-bottom: 30px;
 }
 
 .level-title {
     font-weight: 600;
+    padding-right: 10px;
+    margin-right: 10px;
 }
 
 .path {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
+}
+
+.path::before {
+    content: "";
+    position: absolute;
+    height: 2px;
+    background: #e5e7eb;
+    width: 100%;
+    z-index: -1;
 }
 
 .lesson {
@@ -33,14 +44,42 @@
     cursor: pointer;
 }
 
+.lesson:hover,
+.test.unlocked:hover {
+    background: #eef2ff;
+    border-color: #6366f1;
+}
+
+.lesson:active,
+.test.unlocked:active {
+    transform: scale(0.95);
+}
+
 .lesson.completed {
     background: #e0e7ff;
 }
 
+.lesson-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 400px; 
+    margin-top: 40px;
+}
+
+
+
 .test {
-    font-size: 20px;
-    background: none;
-    border: none;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 18px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+
     cursor: pointer;
 }
 
@@ -51,6 +90,7 @@
 .test.locked {
     color: #ccc;
     cursor: not-allowed;
+    pointer-events: none;
 }
 
 .status {
@@ -63,9 +103,55 @@
 }
 
 .status.in-progress {
-    color: #4f46ff;
+    color: #6366f1;
 }
 
 .status.locked {
     color: #999;
+}
+
+/* Content Modal */
+.content-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
+
+#completeLessonBtn {
+    margin-top: auto;      
+    align-self: flex-end;  
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
 }
