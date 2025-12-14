@@ -22,7 +22,6 @@ Base = declarative_base()
 
 class InterviewStatus(enum.Enum):
     scheduled = "scheduled"
-    requested = "requested"
     completed = "completed"
     cancelled = "cancelled"
 
