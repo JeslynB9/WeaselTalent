@@ -16,7 +16,6 @@ from backend.cors_config import add_cors_middleware
 from backend.users import router as users_router
 from backend.auth import router as auth_router
 from backend.recruiter_routes import router as recruiter_router
-from backend.assessment import router as assessment_router  # optional
 
 # --------------------------------------------------
 # CREATE APP FIRST (IMPORTANT)
