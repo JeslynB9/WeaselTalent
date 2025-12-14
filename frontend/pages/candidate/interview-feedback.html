@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="../../css/pages/interviews.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .star { font-size: 30px; color: #ccc; margin-right:6px; }
+        .star.filled { color: #f5b400; text-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+    </style>
 </head>
 <body>
 
@@ -38,8 +42,7 @@
             <div class="card-header">
                 <h3>Positives</h3>
             </div>
-            <div class="comment"> Strong communication skills and clear problem-solving approach.
-                Answered technical questions confidently and explained reasoning well.
+            <div id="positives" class="comment"> Loading feedback... </div>
             </div>
         </div>
 
@@ -47,8 +50,7 @@
             <div class="card-header">
                 <h3>Negatives</h3>
             </div>
-            <div class="comment"> Could improve time management during coding tasks.
-                Some uncertainty when discussing system design concepts.
+            <div id="negatives" class="comment"></div>
             </div>
         </div>
 
@@ -56,13 +58,7 @@
             <div class="card-header">
                 <h3>Interview Rating</h3>
             </div>
-            <div class="rating readonly">
-                <span class="star filled">★</span>
-                <span class="star filled">★</span>
-                <span class="star filled">★</span>
-                <span class="star">★</span>
-                <span class="star">★</span>
-            </div>
+            <div id="rating" class="rating readonly"></div>
         </div>
     </div>
 
@@ -73,5 +69,45 @@
 
 <script src="../../js/api-config.js"></script>
 <script src="../../js/components/profile-column.js"></script>
+<script>
+// Read interview_id from query string and fetch notes
+async function initFeedback() {
+    const params = new URLSearchParams(window.location.search);
+    const interviewId = params.get('interview_id');
+    if (!interviewId) {
+        document.getElementById('positives').textContent = 'No interview selected.';
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE.replace(/\/$/, '')}/interviews/${interviewId}/notes`);
+        if (!res.ok) throw new Error('Failed to load notes');
+        const data = await res.json();
+        const notes = data.notes || '';
+        const score = data.fit_score || 0;
+        const decision = data.decision || '';
+
+        // Simple split: assume notes contains positives/negatives separated by '\n\n' (best-effort)
+        const parts = notes.split('\n\n');
+        document.getElementById('positives').textContent = parts[0] || '';
+        document.getElementById('negatives').textContent = parts[1] || '';
+
+        // render rating (map stored fit_score to 1-5 scale)
+        let displayScore = 0;
+        if (data.fit_score) {
+            const raw = Number(data.fit_score);
+            displayScore = raw > 5 ? Math.round(raw / 2) : raw; // map 6-10 -> 3-5
+            displayScore = Math.max(0, Math.min(5, displayScore));
+        }
+        const ratingEl = document.getElementById('rating');
+        ratingEl.innerHTML = Array.from({length:5}).map((_,i)=> i < displayScore ? '<span class="star filled">★</span>' : '<span class="star">★</span>').join('');
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById('positives').textContent = 'Failed to load feedback.';
+    }
+}
+document.addEventListener('DOMContentLoaded', initFeedback);
+</script>
 </body>
 </html>
