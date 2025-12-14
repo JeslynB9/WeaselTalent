@@ -23,6 +23,37 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // technical domains logic
+    const selectedDomains = new Set();
+
+    document.querySelectorAll(".domain.selected").forEach(el => {
+        selectedDomains.add(el.dataset.domain);
+    });
+
+    document.querySelectorAll(".domain").forEach(domainEl => {
+        domainEl.addEventListener("click", () => {
+            const domain = domainEl.dataset.domain;
+
+            if (selectedDomains.has(domain)) {
+                selectedDomains.delete(domain);
+                domainEl.classList.remove("selected");
+            } else {
+                selectedDomains.add(domain);
+                domainEl.classList.add("selected");
+            }
+
+            console.log("Selected domains:", [...selectedDomains]);
+        })
+    })
+
+    // save button
+    const saveSkillsBtn = document.getElementById("save-skills");
+    if (saveSkillsBtn) {
+        saveSkillsBtn.addEventListener("click", () => {
+            console.log("Saving domains:", [...selectedDomains]);
+        });
+    }
+
 });
 
 function toggleVisualState(card, isVisible) {
