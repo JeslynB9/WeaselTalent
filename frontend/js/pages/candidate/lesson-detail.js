@@ -1,4 +1,4 @@
-import { API_BASE } from "../../api-config.js";
+import { API_BASE } from "../../api-config.module.js";
 
 const CANDIDATE_ID = 1;
 
