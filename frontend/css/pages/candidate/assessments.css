@@ -97,3 +97,13 @@
     font-size: 24px;
     cursor: pointer;
 }
+
+#reset-filter-btn {
+    margin-top: 10px;
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
