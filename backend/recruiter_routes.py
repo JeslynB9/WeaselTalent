@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from backend.db import SessionLocal
 from backend.models import JobRole, JobRoleRequirementText, Recruiter
 from datetime import datetime
-from db import get_db
+from backend.db import get_db
 from models import (
     RecruiterAvailability,
     Interview,
@@ -20,13 +20,6 @@ class InterviewScheduleIn(BaseModel):
     candidate_id: int
     role_id: int
     scheduled_time: datetime
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 class RequirementIn(BaseModel):
     requirement_text: str
@@ -136,3 +129,45 @@ def list_roles(recruiter_id: int, db: Session = Depends(get_db)):
 
     return out
 
+@router.post("/{recruiter_id}/interviews")
+def schedule_interview(
+    recruiter_id: int,
+    payload: InterviewScheduleIn,
+    db: Session = Depends(get_db),
+):
+    # 1. Find a free availability slot
+    slot = (
+        db.query(RecruiterAvailability)
+        .filter(
+            RecruiterAvailability.recruiter_id == recruiter_id,
+            RecruiterAvailability.is_booked == False,
+            RecruiterAvailability.start_time <= payload.scheduled_time,
+            RecruiterAvailability.end_time >= payload.scheduled_time,
+        )
+        .first()
+    )
+
+    if not slot:
+        raise HTTPException(409, "Recruiter not available at that time")
+
+    # 2. Create interview
+    interview = Interview(
+        candidate_id=payload.candidate_id,
+        recruiter_id=recruiter_id,
+        role_id=payload.role_id,
+        scheduled_time=payload.scheduled_time,
+        status=InterviewStatus.scheduled,
+    )
+
+    # 3. Lock the slot
+    slot.is_booked = True
+
+    db.add(interview)
+    db.commit()
+    db.refresh(interview)
+
+    return {
+        "interview_id": interview.interview_id,
+        "status": interview.status.value,
+        "scheduled_time": interview.scheduled_time,
+    }
