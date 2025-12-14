@@ -1,4 +1,4 @@
-import { API_BASE } from "../../api-config.js";
+import { API_BASE } from "../../api-config.module.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const urlParams = new URLSearchParams(window.location.search);

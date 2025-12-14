@@ -1,18 +1,19 @@
 // assessments.js (ES module)
-import { API_BASE } from "../../api-config.js";
+import { API_BASE } from "../../api-config.module.js";
 
 const CANDIDATE_ID = 1;
 const listEl = document.querySelector(".assessment-list");
 
 const levelFilter = document.getElementById("filter-level");
-const domainFilter = document.getElementById("filter-domain");
+// const domainFilter = document.getElementById("filter-domain");
 const statusFilter = document.getElementById("filter-status");
 const resetBtn = document.getElementById("reset-filter-btn");
 
 let allCourses = [];
 
+
 // ----------------------------
-// Render (KEEP ORIGINAL STYLING)
+// Render 
 // ----------------------------
 function renderCourses(courses) {
   listEl.innerHTML = "";
@@ -68,44 +69,44 @@ function renderCourses(courses) {
 function applyFilters() {
   let filtered = [...allCourses];
 
-  // Level
   if (levelFilter.value !== "all") {
+    const level = Number(levelFilter.value);
     filtered = filtered.filter(
-      c => c.difficulty_level === Number(levelFilter.value)
+      c => Number(c.difficulty_level) === level
     );
   }
 
-  // Status
   if (statusFilter.value === "completed") {
     filtered = filtered.filter(c => c.is_completed);
   } else if (statusFilter.value === "available") {
     filtered = filtered.filter(c => !c.is_completed);
-  } else if (statusFilter.value === "locked") {
-    filtered = []; // placeholder (no locked data yet)
-  }
-
-  // Domain (future-proof)
-  if (domainFilter.value !== "all") {
-    filtered = filtered.filter(
-      c => c.domain === domainFilter.value
-    );
   }
 
   renderCourses(filtered);
 }
+
 
 // ----------------------------
 // Load from backend
 // ----------------------------
 async function loadCourses() {
   try {
+    console.log("loadCourses called");
+
     const res = await fetch(
       `${API_BASE}/courses?candidate_id=${CANDIDATE_ID}`
     );
 
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    console.log("response status:", res.status);
 
-    allCourses = await res.json();
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
+    const courses = await res.json(); // ✅ ONLY ONCE
+    console.log("courses from backend:", courses);
+
+    allCourses = courses;
     renderCourses(allCourses);
 
   } catch (err) {
@@ -115,19 +116,22 @@ async function loadCourses() {
   }
 }
 
+
 // ----------------------------
 // Events
 // ----------------------------
 levelFilter.addEventListener("change", applyFilters);
-domainFilter.addEventListener("change", applyFilters);
+// domainFilter.addEventListener("change", applyFilters);
 statusFilter.addEventListener("change", applyFilters);
 
 resetBtn.addEventListener("click", () => {
   levelFilter.value = "all";
-  domainFilter.value = "all";
+  // domainFilter.value = "all";
   statusFilter.value = "all";
   renderCourses(allCourses);
 });
+
+
 
 // ----------------------------
 // Init
