@@ -18,11 +18,11 @@
         <input type="text" placeholder="Search candidates">
     </div>
     <div class="links">
-        <a href="../../pages/recruiter/home.html">Home</a>
+        <a href="../../pages/recruiter/dashboard.html">Dashboard</a>
         <a href="../../pages/recruiter/jobs.html">Jobs</a>
         <a href="../../pages/recruiter/courses.html">Courses</a>
         <a href="../../pages/recruiter/interviews.html">Interviews</a>
-        <a href="../../pages/shared/profile.html">Me</a>
+        <a href="../../pages/recruiter/profile.html">Me</a>
     </div>
 </nav>
 
@@ -63,9 +63,10 @@
             <div class="candidate-list">
 
                 <!-- CANDIDATE CARD -->
-                <div class="candidate-card"
-                     data-role="backend"
-                     data-match="94">
+             <div class="candidate-card"
+                 data-role="backend"
+                 data-match="94"
+                 data-candidate-id="1024">
 
                     <div class="candidate-header">
                         <div>
@@ -93,13 +94,15 @@
                     <div class="actions">
                         <button class="primary">View Profile</button>
                         <button class="secondary">Request Interview</button>
+                        <button class="secondary" onclick="window.location.href='../../pages/recruiter/interview-feedback.html?candidate_id=1024&role=backend'">Write Feedback</button>
                     </div>
                 </div>
 
                 <!-- CANDIDATE CARD -->
-                <div class="candidate-card"
-                     data-role="backend"
-                     data-match="82">
+             <div class="candidate-card"
+                 data-role="backend"
+                 data-match="82"
+                 data-candidate-id="2048">
 
                     <div class="candidate-header">
                         <div>
@@ -125,6 +128,7 @@
                     <div class="actions">
                         <button class="primary">View Profile</button>
                         <button class="secondary">Request Interview</button>
+                        <button class="secondary" onclick="window.location.href='../../pages/recruiter/interview-feedback.html?candidate_id=2048&role=backend'">Write Feedback</button>
                     </div>
                 </div>
 

@@ -5,9 +5,20 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+from backend.cors_config import add_cors_middleware
+from backend.auth import router as auth_router
+from backend.models import Base
+from backend.db import engine
+
 
 DB_PATH = "assessments.db" #SQLite database file
 app = FastAPI(title="Lyrathon Assessments Backend", version="0.1.0") #FastAPI now listens for HTTP requests
+
+add_cors_middleware(app)
+app.include_router(auth_router)
+
+# Create all tables
+Base.metadata.create_all(bind=engine)
 
 # ----------------------------
 # Pydantic Models (API schemas)
