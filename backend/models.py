@@ -30,7 +30,6 @@
 ### NOTIFICATIONS
     # Notifications: notification_id, user_id, type, message, is_read, created_at 
 
-from proto import ENUM
 from sqlalchemy import (
     Column, 
     Integer,
@@ -162,6 +161,7 @@ class Assessment(Base):
 
     scaffold = relationship("AssessmentScaffold", back_populates="assessments")
 
+
 class CandidateAssessment(Base):
     __tablename__ = "candidate_assessments"
     __table_args__ = (
@@ -212,6 +212,12 @@ class JobRole(Base):
         back_populates="role",
         cascade="all, delete-orphan",
     )
+    # free-text requirements stored by the web frontend (requirement text + optional level)
+    requirements_text = relationship(
+        "JobRoleRequirementText",
+        back_populates="role",
+        cascade="all, delete-orphan",
+    )
 
 
 ## Job role requirements in terms of technical domains + skill levels
@@ -228,6 +234,22 @@ class JobRoleRequirement(Base):
 
     role = relationship("JobRole", back_populates="requirements")
     domain = relationship("TechnicalDomain")
+
+
+class JobRoleRequirementText(Base):
+    """Simple free-text requirements storage for the frontend form.
+
+    This stores arbitrary requirement text and an optional numeric level.
+    It keeps the frontend UX working without forcing a domain->id mapping.
+    """
+    __tablename__ = "job_role_requirements_text"
+
+    id = Column(Integer, primary_key=True)
+    role_id = Column(Integer, ForeignKey("job_roles.role_id"), nullable=False)
+    requirement_text = Column(Text)
+    level = Column(Integer, nullable=True)
+
+    role = relationship("JobRole", back_populates="requirements_text")
 
 
 # =====================================================

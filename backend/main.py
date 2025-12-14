@@ -1,6 +1,6 @@
 # entry point
-from db import engine
-from models import Base
+from backend.db import engine
+from backend.models import Base
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from users import router as users_router
