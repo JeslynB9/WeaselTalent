@@ -13,6 +13,7 @@ from sqlalchemy.orm import sessionmaker
 from models import Base, TechnicalDomain, Course, Assessment, Level, Task
 from db import engine
 
+Base.metadata.create_all(engine)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 db = SessionLocal()
 
@@ -260,14 +261,16 @@ candidate1 = User(
     email="candidate1@example.com",
     password_hash=hash_password("pass123"),
     role="candidate",
-    full_name="John Doe"
+    full_name="John Doe", 
+    is_anonymous=True 
 )
 
 candidate2 = User(
     email="candidate2@example.com",
     password_hash=hash_password("pass123"),
     role="candidate",
-    full_name="Jane Smith"
+    full_name="Jane Smith", 
+    is_anonymous=True 
 )
 
 db.add(candidate1)
@@ -283,14 +286,16 @@ recruiter_user1 = User(
     email="recruiter1@example.com",
     password_hash=hash_password("pass123"),
     role="recruiter",
-    full_name="Recruiter One"
+    full_name="Recruiter One", 
+    is_anonymous=False
 )
 
 recruiter_user2 = User(
     email="recruiter2@example.com",
     password_hash=hash_password("pass123"),
     role="recruiter",
-    full_name="Recruiter Two"
+    full_name="Recruiter Two", 
+    is_anonymous=False
 )
 
 db.add(recruiter_user1)

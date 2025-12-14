@@ -50,6 +50,7 @@ class User(Base):
 
     candidate_skills = relationship("CandidateSkillLevel", back_populates="candidate")
     notifications = relationship("Notification", back_populates="user")
+    is_anonymous = Column(Boolean, default=False)
 
 # =====================================================
 # CANDIDATE DOMAIN + SKILLS

@@ -4,26 +4,40 @@
 <meta charset="UTF-8">
 <title>Navigation</title>
 <link rel="stylesheet" href="../../css/components/navbar.css">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+/>
 </head>
 <body>
 
-<div class="navbar">
-    <div class="nav-left">
-        <div class="logo">
-            <img src="../../assets/images/logo.png" alt="Talent Logo">
-            Talent
-        </div>
-        <input class="search" type="text" placeholder="Search">
-    </div>
+<div class="nav-right">
+    <a href="../../pages/candidate/home.html" class="nav-item">
+    <i class="fa-solid fa-house"></i>
+    <span>Home</span>
+    </a>
 
-    <div class="nav-right">
-        <a href="../../pages/candidate/home.html">Home</a>
-        <a href="../../pages/candidate/jobs.html">Jobs</a>
-        <a href="../../pages/candidate/assessments.html">Assessments</a>
-        <a href="../../pages/shared/notifications.html">Notifications</a>
-        <a href="../../pages/shared/profile.html">Me</a>
-    </div>
+    <a href="../../pages/candidate/jobs.html" class="nav-item">
+    <i class="fa-solid fa-briefcase"></i>
+    <span>Jobs</span>
+    </a>
+
+    <a href="../../pages/shared/notifications.html" class="nav-item">
+    <i class="fa-solid fa-bell"></i>
+    <span>Notifications</span>
+    </a>
+
+    <a href="../../pages/shared/interviews.html" class="nav-item">
+    <i class="fa-solid fa-person"></i>
+    <span>Interviews</span>
+    </a>
+
+    <a href="../../pages/shared/profile.html" class="nav-item">
+    <i class="fa-solid fa-user"></i>
+    <span>Me</span>
+    </a>
 </div>
+
 
 </body>
 </html>

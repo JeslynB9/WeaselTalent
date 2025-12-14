@@ -1,6 +1,28 @@
 // technical domains logic
 const selectedDomains = new Set();
+const anonToggle = document.getElementById("anon-toggle");
+const userId = localStorage.getItem("user_id"); // or however you store it
 
+async function loadAnonymousStatus() {
+  const res = await fetch(`${API_BASE}/users/${userId}`);
+  const user = await res.json();
+  anonToggle.checked = user.is_anonymous;
+}
+
+anonToggle.addEventListener("change", async () => {
+  await fetch(`${API_BASE}/users/${userId}/anonymous`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      is_anonymous: anonToggle.checked
+    })
+  });
+});
+
+
+loadAnonymousStatus();
 document.addEventListener("DOMContentLoaded", () => {
 
     const skillCards = document.querySelectorAll(".skill-card");
@@ -112,12 +134,5 @@ function toggleVisualState(card, isVisible) {
 
 function persistSkill(skillName, isVisible) {
     console.log(`Skill: ${skillName}, Visible: ${isVisible}`);
-}
-
-const anonToggle = document.getElementById("anon-toggle");
-if (anonToggle) {
-    anonToggle.addEventListener("change", () => {
-        console.log("Anonymous profile:", anonToggle.checked);
-    });
 }
 

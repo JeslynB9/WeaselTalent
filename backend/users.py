@@ -31,6 +31,9 @@ class UserOut(BaseModel):
     class Config:
         from_attributes = True
 
+class AnonymousUpdate(BaseModel):
+    is_anonymous: bool
+
 # creates a group of routes under /users
 router = APIRouter (
     prefix="/users",
@@ -69,3 +72,19 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
 
     return user
+
+
+@router.patch("/{user_id}/anonymous")
+def update_anonymous_status(
+    user_id: int,
+    payload: AnonymousUpdate,
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.is_anonymous = payload.is_anonymous
+    db.commit()
+
+    return {"status": "ok", "is_anonymous": user.is_anonymous}
