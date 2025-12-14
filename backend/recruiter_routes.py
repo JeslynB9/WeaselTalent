@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from backend.db import SessionLocal
-from backend.models import JobRole, JobRoleRequirementText, Recruiter, Interview, InterviewNote, InterviewStatus
+from backend.models import JobRole, JobRoleRequirementText, Recruiter, Interview, InterviewNote
 
 
 def get_db():
@@ -37,7 +37,6 @@ class NoteIn(BaseModel):
     notes: Optional[str] = None
     fit_score: Optional[int] = None
     decision: Optional[str] = None
-    role_id: Optional[int] = None
 
 
 router = APIRouter(prefix="/recruiters", tags=["recruiters"])
@@ -108,13 +107,8 @@ def create_interview(recruiter_id: int, payload: InterviewCreateIn, db: Session 
         raise HTTPException(status_code=403, detail="Role does not belong to your company")
 
     # create interview
-    interview = Interview(
-        candidate_id=payload.candidate_id,
-        recruiter_id=recruiter_id,
-        role_id=payload.role_id,
-        scheduled_time=payload.scheduled_time,
-        status=(InterviewStatus.scheduled if payload.scheduled_time else InterviewStatus.requested)
-    )
+    interview = Interview(candidate_id=payload.candidate_id, recruiter_id=recruiter_id, role_id=payload.role_id,
+                          scheduled_time=payload.scheduled_time, status=("scheduled" if payload.scheduled_time else "requested"))
     db.add(interview)
     db.commit()
     db.refresh(interview)
@@ -142,24 +136,11 @@ def create_or_update_note(recruiter_id: int, interview_id: int, payload: NoteIn,
             existing.fit_score = payload.fit_score
         if payload.decision is not None:
             existing.decision = payload.decision
-        # allow updating interview role if provided
-        if payload.role_id is not None:
-            interview.role_id = payload.role_id
-            db.add(interview)
-            db.commit()
-            db.refresh(interview)
         db.add(existing)
         db.commit()
         db.refresh(existing)
         return {"ok": True, "note_id": existing.id}
     else:
-        # if role_id provided in note payload, update interview.role_id as well
-        if payload.role_id is not None:
-            interview.role_id = payload.role_id
-            db.add(interview)
-            db.commit()
-            db.refresh(interview)
-
         note = InterviewNote(interview_id=interview_id, recruiter_id=recruiter_id, notes=payload.notes, fit_score=payload.fit_score, decision=payload.decision)
         db.add(note)
         db.commit()
