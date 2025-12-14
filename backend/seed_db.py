@@ -256,8 +256,20 @@ def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
 # Candidates
-candidate1 = User(email="candidate1@example.com", password_hash=hash_password("pass123"), role="candidate")
-candidate2 = User(email="candidate2@example.com", password_hash=hash_password("pass123"), role="candidate")
+candidate1 = User(
+    email="candidate1@example.com",
+    password_hash=hash_password("pass123"),
+    role="candidate",
+    full_name="John Doe"
+)
+
+candidate2 = User(
+    email="candidate2@example.com",
+    password_hash=hash_password("pass123"),
+    role="candidate",
+    full_name="Jane Smith"
+)
+
 db.add(candidate1)
 db.add(candidate2)
 db.commit()
@@ -267,8 +279,20 @@ db.commit()
 db.commit()
 
 # Recruiters
-recruiter_user1 = User(email="recruiter1@example.com", password_hash=hash_password("pass123"), role="recruiter")
-recruiter_user2 = User(email="recruiter2@example.com", password_hash=hash_password("pass123"), role="recruiter")
+recruiter_user1 = User(
+    email="recruiter1@example.com",
+    password_hash=hash_password("pass123"),
+    role="recruiter",
+    full_name="Recruiter One"
+)
+
+recruiter_user2 = User(
+    email="recruiter2@example.com",
+    password_hash=hash_password("pass123"),
+    role="recruiter",
+    full_name="Recruiter Two"
+)
+
 db.add(recruiter_user1)
 db.add(recruiter_user2)
 db.commit()
