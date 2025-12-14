@@ -53,6 +53,11 @@ async function login() {
     localStorage.setItem("user", JSON.stringify(data));
 
     if (data.role === "recruiter") {
+      // save recruiter id (from backend) and expose globally for non-module pages
+      if (data.recruiter_id) {
+        localStorage.setItem("recruiter_id", data.recruiter_id);
+        try { window.RECRUITER_ID = data.recruiter_id; } catch (e) {}
+      }
       window.location.href = "../recruiter/dashboard.html";
     } else {
       window.location.href = "../candidate/home.html";

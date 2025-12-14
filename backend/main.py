@@ -5,6 +5,7 @@ from assessment import router as courses_router
 from users import router as users_router
 from auth import router as auth_router
 from candidate import router as candidate_router
+from recruiter_routes import router as recruiter_router
 
 app = FastAPI(title="WeaselTalent API")
 
@@ -26,6 +27,7 @@ app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(candidate_router)
 app.include_router(courses_router)
+app.include_router(recruiter_router)
 
 # -----------------------------
 # Health check (optional but useful)

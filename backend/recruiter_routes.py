@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from backend.db import SessionLocal
-from backend.models import JobRole, JobRoleRequirementText, Recruiter, Interview, InterviewNote
+# use local imports (run from backend folder) so module imports are consistent with main.py
+from db import SessionLocal
+from models import JobRole, JobRoleRequirement, Recruiter, Interview, InterviewNote
 
 
 def get_db():
@@ -58,10 +59,11 @@ def create_role(recruiter_id: int, payload: RoleCreate, db: Session = Depends(ge
     db.commit()
     db.refresh(role)
 
-    # store free-text requirements if provided
+    # store requirements (map to JobRoleRequirement). frontend may supply free-text;
+    # we store minimum_level and leave domain_id empty when domain is unknown.
     if payload.requirements:
         for r in payload.requirements:
-            req = JobRoleRequirementText(role_id=role.role_id, requirement_text=r.requirement_text, level=r.level)
+            req = JobRoleRequirement(role_id=role.role_id, domain_id=None, minimum_level=(r.level if r.level is not None else None))
             db.add(req)
         db.commit()
 
@@ -81,13 +83,17 @@ def list_roles(recruiter_id: int, db: Session = Depends(get_db)):
 
     out = []
     for r in roles:
-        reqs = db.query(JobRoleRequirementText).filter(JobRoleRequirementText.role_id == r.role_id).all()
+        reqs = db.query(JobRoleRequirement).filter(JobRoleRequirement.role_id == r.role_id).all()
         out.append({
             "role_id": r.role_id,
             "company_id": r.company_id,
             "title": r.title,
             "description": r.description,
-            "requirements": [{"id": q.id, "text": q.requirement_text, "level": q.level} for q in reqs]
+            "requirements": [{
+                "id": q.id,
+                "text": (q.domain.name if q.domain is not None else (f"Level {q.minimum_level}" if q.minimum_level is not None else "")),
+                "level": q.minimum_level
+            } for q in reqs]
         })
 
     return out

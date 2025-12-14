@@ -4,8 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const requirementsContainer = document.getElementById('requirements');
     const message = document.getElementById('form-message');
 
-    // demo recruiter id (seeded)
-    const recruiterId = 10;
+    // recruiter id should be dynamic: read from global set at login or from localStorage
+    const recruiterId = (typeof window !== 'undefined' && window.RECRUITER_ID)
+        ? window.RECRUITER_ID
+        : (localStorage.getItem('recruiter_id') ? parseInt(localStorage.getItem('recruiter_id'), 10) : null);
 
     function createRequirementRow() {
         const row = document.createElement('div');
@@ -81,6 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
             requirements,
         };
         if (roleIdVal) payload.role_id = parseInt(roleIdVal, 10);
+
+        if (!recruiterId) {
+            message.textContent = 'Cannot create role: recruiter not identified. Please log in.';
+            return;
+        }
 
         try {
             const res = await fetch(`${API_BASE}/recruiters/${recruiterId}/roles`, {
