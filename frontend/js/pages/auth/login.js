@@ -1,4 +1,6 @@
-import { API_BASE } from "../../api-config.module.js";
+const API_BASE = "http://127.0.0.1:8000";
+
+console.log("login.js loaded");
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");
@@ -48,8 +50,7 @@ async function login() {
     }
 
     // Success
-    localStorage.setItem("user_id", data.id);
-    localStorage.setItem("role", data.role);
+    localStorage.setItem("user", JSON.stringify(data));
 
     if (data.role === "recruiter") {
       window.location.href = "../recruiter/dashboard.html";

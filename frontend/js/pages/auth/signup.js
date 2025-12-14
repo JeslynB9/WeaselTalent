@@ -1,7 +1,10 @@
-import { API_BASE } from "../../api-config.module.js";
+// simple checker to check if js is connected
+console.log("signup.js loaded");
+
+const API_BASE = "http://127.0.0.1:8000";
 
 document.getElementById("signupBtn").addEventListener("click", (event) => {
-  event.preventDefault(); // Prevent any default form submission
+  event.preventDefault();
   signup();
 });
 
@@ -13,74 +16,54 @@ async function signup() {
   const lastName = document.getElementById("lastName").value;
   const errorBox = document.getElementById("error");
 
-  errorBox.textContent = ""; // Clear previous messages
-  errorBox.style.color = "red"; // Default to error color
+  errorBox.textContent = "";
+  errorBox.style.color = "red";
 
   if (!email || !password || !role || !firstName || !lastName) {
     errorBox.textContent = "Please fill in all required fields.";
     return;
   }
 
-  // Basic email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     errorBox.textContent = "Please enter a valid email address.";
     return;
   }
 
-  console.log("Email:", email);
-  console.log("Password:", password);
-  console.log("Role:", role);
-
   try {
-    const res = await fetch(`${API_BASE}/auth/signup`, {
+    const res = await fetch(`${API_BASE}/users/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, role, first_name: firstName, last_name: lastName })
+      body: JSON.stringify({ 
+            email, 
+            password, 
+            role,
+            first_name: firstName,
+            last_name: lastName
+        })
     });
 
     if (!res.ok) {
       const errorData = await res.json();
-      if (errorData.detail && Array.isArray(errorData.detail)) {
-        errorBox.textContent = errorData.detail.map(err => err.msg || err.message).join(", ");
-      } else {
-        errorBox.textContent = errorData.detail || "Signup failed";
-      }
-    } else {
-      // Auto-login after successful signup
-      try {
-        const loginRes = await fetch(`${API_BASE}/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-        const loginData = await loginRes.json();
-        if (loginRes.ok) {
-          localStorage.setItem("user_id", loginData.id);
-          localStorage.setItem("role", loginData.role);
-          errorBox.style.color = "green";
-          errorBox.textContent = "Signup successful! Redirecting...";
-          setTimeout(() => {
-            if (loginData.role === "recruiter") {
-              window.location.href = "../recruiter/dashboard.html";
-            } else {
-              window.location.href = "../candidate/home.html";
-            }
-          }, 2000);
-        } else {
-          errorBox.textContent = "Signup successful, but login failed. Please log in manually.";
-          setTimeout(() => {
-            window.location.href = "login.html";
-          }, 2000);
-        }
-      } catch (loginError) {
-        console.error("Auto-login error:", loginError);
-        errorBox.textContent = "Signup successful, but login failed. Please log in manually.";
-        setTimeout(() => {
-          window.location.href = "login.html";
-        }, 2000);
-      }
+      errorBox.textContent = errorData.detail || "Signup failed";
+      return;
     }
+
+    const user = await res.json();
+    // store entire user object
+    localStorage.setItem("user", JSON.stringify(user));
+
+    errorBox.style.color = "green";
+    errorBox.textContent = "Signup successful! Redirecting...";
+
+    setTimeout(() => {
+      if (user.role === "recruiter") {
+        window.location.href = "../recruiter/dashboard.html";
+      } else {
+        window.location.href = "../candidate/home.html";
+      }
+    }, 800);
+
   } catch (error) {
     console.error("Signup error:", error);
     errorBox.textContent = "An error occurred. Please try again.";

@@ -1,64 +1,32 @@
 # entry point
-
+from db import engine
+from models import Base
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.users import router as users_router
-from backend.cors_config import add_cors_middleware
-import backend.auth, backend.recruiter, backend.assessment
-import backend.recruiter_routes
-import backend.interviews_routes
-
-from backend.db import engine
-from backend.models import Base
-from backend.cors_config import add_cors_middleware
-
-# routers
-from backend.users import router as users_router
-from backend.auth import router as auth_router
-from backend.recruiter_routes import router as recruiter_router
-
-# --------------------------------------------------
-# CREATE APP FIRST (IMPORTANT)
-# --------------------------------------------------
+from users import router as users_router
+from candidate import router as candidate_router
+from auth import router as auth_router
 
 app = FastAPI()
 
-# --------------------------------------------------
-# CORS
-# --------------------------------------------------
-
-add_cors_middleware(app)
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --------------------------------------------------
-# DATABASE
-# --------------------------------------------------
+# register signup for candidate routes
+app.include_router(candidate_router)
 
+# create all tables defined on `Base`
 Base.metadata.create_all(bind=engine)
 
 # register user routes
 app.include_router(users_router)
-app.include_router(backend.auth.router)
-app.include_router(backend.recruiter_routes.router)
-app.include_router(backend.interviews_routes.router)
-# app.include_router(recruiter.router)
-# app.include_router(assessment.router)
 
-app.include_router(users_router)
+## register login auth routes
 app.include_router(auth_router)
-app.include_router(recruiter_router, prefix="/recruiters")
 
-# optional / demo routes
-# app.include_router(assessment_router)
-
-# --------------------------------------------------
-# RUN WITH:
-# uvicorn main:app --reload
-# --------------------------------------------------
+# to start server: uvicorn main:app --reload

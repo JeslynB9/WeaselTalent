@@ -21,30 +21,27 @@
 
     <!-- Right section -->
     <div class="right">
-        <div class="login-card">
+        <form class="login-card" id="loginForm">
             <div class="logo">
                 <img src="../../assets/images/logo.png" alt="Logo" width="200" height="200">
             </div>
-            <form id="loginForm">
-                <input id="email" type="text" placeholder="Email">
-                <input id="password" type="password" placeholder="Password">
-                <a href="#" class="forgot">Forgot Password?</a>
-                <div id="error" style="color: red; margin-top: 10px;"></div>
-                <button type="submit">Login</button>
-            </form>
 
-            <!-- <button onclick="window.location.href='../../pages/candidate/home.html'">Login</button> -->
+            <input id="email" type="text" placeholder="Email">
+            <input id="password" type="password" placeholder="Password">
+
+            <a href="#" class="forgot">Forgot Password?</a>
+
+            <button type="submit">Login</button>
+
+            <p id="error" class="hidden" style="margin-top: 12px; color: red;"></p>
 
             <div class="signup">
                 Don’t have an account? <a href="signup.html">Sign Up</a>
             </div>
-        </div>
+        </form>
     </div>
-
+    <script type="module" src="../../js/pages/auth/login.js"></script>
 </body>
-
-<!-- <script src="../../js/api-config.js"></script> -->
-<script type="module" src="../../js/pages/auth/login.js"></script>
 </html>
 
 
