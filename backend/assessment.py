@@ -5,10 +5,10 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
-from cors_config import add_cors_middleware
-from auth import router as auth_router
-from models import Base
-from db import engine
+from backend.cors_config import add_cors_middleware
+from backend.auth import router as auth_router
+from backend.models import Base
+from backend.db import engine
 
 
 DB_PATH = "assessments.db" #SQLite database file

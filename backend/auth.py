@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
-from db import SessionLocal
-from models import User, UserProfile
+from backend.db import SessionLocal
+from backend.models import User, UserProfile
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

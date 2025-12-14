@@ -54,3 +54,28 @@ def create_role(recruiter_id: int, payload: RoleCreate, db: Session = Depends(ge
         db.commit()
 
     return {"role_id": role.role_id}
+
+
+@router.get("/{recruiter_id}/roles")
+def list_roles(recruiter_id: int, db: Session = Depends(get_db)):
+    """
+    List job roles that belong to the recruiter's company.
+    """
+    recruiter = db.query(Recruiter).filter(Recruiter.recruiter_id == recruiter_id).first()
+    if not recruiter:
+        raise HTTPException(status_code=404, detail="Recruiter not found")
+
+    roles = db.query(JobRole).filter(JobRole.company_id == recruiter.company_id).all()
+
+    out = []
+    for r in roles:
+        reqs = db.query(JobRoleRequirementText).filter(JobRoleRequirementText.role_id == r.role_id).all()
+        out.append({
+            "role_id": r.role_id,
+            "company_id": r.company_id,
+            "title": r.title,
+            "description": r.description,
+            "requirements": [{"id": q.id, "text": q.requirement_text, "level": q.level} for q in reqs]
+        })
+
+    return out

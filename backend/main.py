@@ -3,9 +3,10 @@ from backend.db import engine
 from backend.models import Base
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from users import router as users_router
-from cors_config import add_cors_middleware
-import auth, recruiter, assessment
+from backend.users import router as users_router
+from backend.cors_config import add_cors_middleware
+import backend.auth, backend.recruiter, backend.assessment
+import backend.recruiter_routes
 
 
 app = FastAPI()
@@ -24,7 +25,8 @@ Base.metadata.create_all(bind=engine)
 
 # register user routes
 app.include_router(users_router)
-app.include_router(auth.router)
+app.include_router(backend.auth.router)
+app.include_router(backend.recruiter_routes.router)
 # app.include_router(recruiter.router)
 # app.include_router(assessment.router)
 

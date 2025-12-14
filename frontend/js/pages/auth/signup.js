@@ -1,4 +1,4 @@
-import { API_BASE } from "../../api-config.js";
+import { API_BASE } from "../../api-config.module.js";
 
 document.getElementById("signupBtn").addEventListener("click", (event) => {
   event.preventDefault(); // Prevent any default form submission
