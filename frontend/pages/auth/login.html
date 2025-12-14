@@ -21,23 +21,26 @@
 
     <!-- Right section -->
     <div class="right">
-        <div class="login-card">
+        <form class="login-card" id="loginForm">
             <div class="logo">
                 <img src="../../assets/images/logo.png" alt="Logo" width="200" height="200">
             </div>
-            <input type="text" placeholder="Username">
-            <input type="password" placeholder="Password">
+
+            <input id="email" type="text" placeholder="Email">
+            <input id="password" type="password" placeholder="Password">
 
             <a href="#" class="forgot">Forgot Password?</a>
 
-            <button onclick="window.location.href='../../pages/candidate/home.html'">Login</button>
+            <button type="submit">Login</button>
+
+            <p id="error" class="hidden" style="margin-top: 12px; color: red;"></p>
 
             <div class="signup">
                 Don’t have an account? <a href="signup.html">Sign Up</a>
             </div>
-        </div>
+        </form>
     </div>
-
+    <script type="module" src="../../js/pages/auth/login.js"></script>
 </body>
 </html>
 

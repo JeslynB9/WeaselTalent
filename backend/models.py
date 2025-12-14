@@ -30,7 +30,7 @@
 ### NOTIFICATIONS
     # Notifications: notification_id, user_id, type, message, is_read, created_at 
 
-from proto import ENUM
+from sqlalchemy import Enum
 from sqlalchemy import (
     Column, 
     Integer,
@@ -84,26 +84,13 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     password_hash = Column(String, nullable=False)
     role = Column(String, nullable=False)  # candidate / recruiter / admin
+    full_name = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     last_login = Column(DateTime)
     is_active = Column(Boolean, default=True)
 
-    profile = relationship("UserProfile", back_populates="user", uselist=False)
     candidate_skills = relationship("CandidateSkillLevel", back_populates="candidate")
     notifications = relationship("Notification", back_populates="user")
-
-
-class UserProfile(Base):
-    __tablename__ = "user_profiles"
-
-    user_id = Column(Integer, ForeignKey("users.user_id"), primary_key=True)
-    name = Column(String)
-    dob = Column(DateTime)
-    photo = Column(String)
-    is_anonymous = Column(Boolean, default=True)
-
-    user = relationship("User", back_populates="profile")
-
 
 # =====================================================
 # CANDIDATE DOMAIN + SKILLS
@@ -161,7 +148,7 @@ class Assessment(Base):
     is_active = Column(Boolean, default=True)
 
     scaffold = relationship("AssessmentScaffold", back_populates="assessments")
-    tasks = relationship("Task", back_populates="assessment")
+    # tasks = relationship("Task", back_populates="assessment")
 
 class CandidateAssessment(Base):
     __tablename__ = "candidate_assessments"
@@ -175,11 +162,11 @@ class CandidateAssessment(Base):
     total_score = Column(Integer)
     completed_at = Column(DateTime)
 
-    task_results = relationship(
-        "CandidateTaskResult",
-        back_populates="candidate_assessment",
-        cascade="all, delete-orphan",
-    )
+    # task_results = relationship(
+    #     "CandidateTaskResult",
+    #     back_populates="candidate_assessment",
+    #     cascade="all, delete-orphan",
+    # )
 
 class Company(Base):
     __tablename__ = "companies"

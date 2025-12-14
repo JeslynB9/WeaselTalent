@@ -18,6 +18,8 @@ class UserCreate(BaseModel):
     email: str
     password: str
     role: str  # "candidate" | "recruiter" | "admin" etc.
+    first_name: str
+    last_name: str
 
 class UserOut(BaseModel):
     user_id: int
@@ -46,7 +48,8 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db_user = User(
         email=user.email,
         password_hash = fake_hash,
-        role=user.role
+        role=user.role,
+        full_name=f"{user.first_name} {user.last_name}"
     )
 
     db.add(db_user)
@@ -59,3 +62,10 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 def list_users(db: Session = Depends(get_db)):
     return db.query(User).all()
 
+@router.get("/{user_id}", response_model=UserOut)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return user
