@@ -340,24 +340,49 @@ function openDrawer(candidateId) {
 
     // Add event listeners for drawer buttons
     $("closeDrawerBtn").addEventListener("click", closeDrawer);
-    $("saveNoteBtn").addEventListener("click", () => {
+    $("saveNoteBtn").addEventListener("click", async () => {
         if (!activeCandidateId) return;
 
         const rating = $("rating").value;
         const notes = $("notes").value.trim();
 
         if (!rating || !notes) {
-        return showStatus("Add a rating and notes before saving.");
+            return showStatus("Add a rating and notes before saving.");
         }
 
-        NOTES[activeCandidateId] = {
-        rating,
-        notes,
-        savedAt: new Date().toISOString()
-        };
+        try {
+            // First, create an interview record (so it has an id we can attach notes to)
+            const res = await fetch(`${API_BASE}/recruiters/${RECRUITER_ID}/interviews`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ candidate_id: activeCandidateId, role_id: $("jobSelect").value })
+            });
+            if (!res.ok) throw new Error('Failed to create interview');
+            const data = await res.json();
+            const interviewId = data.interview_id;
 
-        $("savedNotes").textContent = `Rating: ${rating}/10 • Saved: ${toHumanDate(NOTES[activeCandidateId].savedAt)}\n\n${notes}`;
-        showStatus("Notes saved.");
+            // Save notes attached to the created interview
+            const noteRes = await fetch(`${API_BASE}/recruiters/${RECRUITER_ID}/interviews/${interviewId}/notes`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ notes, fit_score: parseInt(rating, 10) })
+            });
+            if (!noteRes.ok) throw new Error('Failed to save notes');
+
+            // Persist locally so UI updates quickly
+            NOTES[activeCandidateId] = {
+                rating,
+                notes,
+                savedAt: new Date().toISOString(),
+                interviewId
+            };
+
+            $("savedNotes").textContent = `Rating: ${rating}/10 • Saved: ${toHumanDate(NOTES[activeCandidateId].savedAt)}\n\n${notes}`;
+            showStatus("Notes saved.");
+        } catch (err) {
+            console.error('Error saving notes', err);
+            showStatus('Failed to save notes');
+        }
     });
 
     $("bookBtn").addEventListener("click", () => {

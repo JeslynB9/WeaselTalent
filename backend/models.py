@@ -43,26 +43,13 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     password_hash = Column(String, nullable=False)
     role = Column(String, nullable=False)  # candidate / recruiter / admin
+    full_name = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     last_login = Column(DateTime)
     is_active = Column(Boolean, default=True)
 
-    profile = relationship("UserProfile", back_populates="user", uselist=False)
     candidate_skills = relationship("CandidateSkillLevel", back_populates="candidate")
     notifications = relationship("Notification", back_populates="user")
-
-
-class UserProfile(Base):
-    __tablename__ = "user_profiles"
-
-    user_id = Column(Integer, ForeignKey("users.user_id"), primary_key=True)
-    name = Column(String)
-    dob = Column(DateTime)
-    photo = Column(String)
-    is_anonymous = Column(Boolean, default=True)
-
-    user = relationship("User", back_populates="profile")
-
 
 # =====================================================
 # CANDIDATE DOMAIN + SKILLS
@@ -130,6 +117,7 @@ class CandidateAssessment(Base):
     __table_args__ = (
         UniqueConstraint("candidate_id", "assessment_id"),
     )
+
     candidate_assessment_id = Column(Integer, primary_key=True)
     candidate_id = Column(Integer, ForeignKey("users.user_id"))
     assessment_id = Column(Integer, ForeignKey("assessments.assessment_id"))
@@ -212,12 +200,6 @@ class JobRole(Base):
         back_populates="role",
         cascade="all, delete-orphan",
     )
-    # free-text requirements stored by the web frontend (requirement text + optional level)
-    requirements_text = relationship(
-        "JobRoleRequirementText",
-        back_populates="role",
-        cascade="all, delete-orphan",
-    )
 
 
 ## Job role requirements in terms of technical domains + skill levels
@@ -234,22 +216,6 @@ class JobRoleRequirement(Base):
 
     role = relationship("JobRole", back_populates="requirements")
     domain = relationship("TechnicalDomain")
-
-
-class JobRoleRequirementText(Base):
-    """Simple free-text requirements storage for the frontend form.
-
-    This stores arbitrary requirement text and an optional numeric level.
-    It keeps the frontend UX working without forcing a domain->id mapping.
-    """
-    __tablename__ = "job_role_requirements_text"
-
-    id = Column(Integer, primary_key=True)
-    role_id = Column(Integer, ForeignKey("job_roles.role_id"), nullable=False)
-    requirement_text = Column(Text)
-    level = Column(Integer, nullable=True)
-
-    role = relationship("JobRole", back_populates="requirements_text")
 
 
 # =====================================================
@@ -324,4 +290,3 @@ class Notification(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="notifications")
-

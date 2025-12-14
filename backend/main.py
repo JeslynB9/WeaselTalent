@@ -10,7 +10,6 @@ from datetime import datetime
 
 
 app = FastAPI()
-add_cors_middleware(app)
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,6 +18,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# register signup for candidate routes
+app.include_router(candidate_router)
+
 # create all tables defined on `Base`
 Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
