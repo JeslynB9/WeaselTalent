@@ -1,6 +1,8 @@
 // technical domains logic
 const selectedDomains = new Set();
 
+const candidateId = params.get('candidate_id') || localStorage.getItem('user_id');
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const skillCards = document.querySelectorAll(".skill-card");

@@ -42,25 +42,25 @@
             <div class="card-header">
                 <h3>Positives</h3>
             </div>
-            <div id="positives" class="comment"> Loading feedback... </div>
+            <div id="positives" class="comment"></div>
             </div>
-        </div>
+        
 
         <div class="card">
             <div class="card-header">
                 <h3>Negatives</h3>
             </div>
             <div id="negatives" class="comment"></div>
-            </div>
         </div>
 
         <div class="card">
             <div class="card-header">
                 <h3>Interview Rating</h3>
+                <div class="rating readonly">
+                </div>
             </div>
-            <div id="rating" class="rating readonly"></div>
         </div>
-    </div>
+
 
 
     </div>
@@ -75,7 +75,7 @@ async function initFeedback() {
     const params = new URLSearchParams(window.location.search);
     const interviewId = params.get('interview_id');
     if (!interviewId) {
-        document.getElementById('positives').textContent = 'No interview selected.';
+        // document.getElementById('positives').textContent = 'No interview selected.';
         return;
     }
 

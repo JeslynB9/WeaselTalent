@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // get candidate id from localStorage (set at login) or query param
     const params = new URLSearchParams(window.location.search);
-    const candidateId = params.get('candidate_id') || localStorage.getItem('user_id');
+    const candidateId = 1;
+    // const candidateId = params.get('candidate_id') || localStorage.getItem('user_id');
 
     function renderInterviews(items) {
         if (!listContainer) return;
@@ -42,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const res = await fetch(`${API_BASE}/interviews/candidates/${candidateId}`);
+            const res = await fetch(`${API_BASE}/interviews/candidates/${candidateId}/interviews`);
             if (!res.ok) throw new Error('Failed to load interviews');
             const data = await res.json();
             renderInterviews(data);
